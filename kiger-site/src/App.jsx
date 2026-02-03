@@ -259,21 +259,28 @@ export default function App() {
     <div className={`min-h-screen font-['Outfit',_sans-serif] selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700 ${isDarkMode ? 'bg-[#050505] text-white' : 'bg-white text-zinc-900'}`}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } .modal-open { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }`}</style>
 
-      {/* CURSOR - SEMPRE ATIVO */}
+      {/* CURSOR */}
       {!selectedVideo && (
         <motion.div className="fixed top-0 left-0 rounded-full pointer-events-none z-[9999] hidden md:flex items-center justify-center mix-blend-difference bg-white" style={{ x: mouseX, y: mouseY, translateX: "-50%", translateY: "-50%" }} animate={{ height: cursorVariant === "pointer" ? 80 : 20, width: cursorVariant === "pointer" ? 80 : 20, boxShadow: cursorVariant === "pointer" ? "0 0 60px 15px rgba(255, 255, 255, 0.8)" : "0 0 20px 5px rgba(255, 255, 255, 0.4)" }} transition={{ type: "tween", ease: "backOut", duration: 0.2 }}>
           {cursorVariant === "pointer" && <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-black"><path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" /></svg></motion.div>}
         </motion.div>
       )}
 
-      {/* NAV - COM DESFOQUE ATIVO */}
+      {/* NAV CORRIGIDO */}
       <nav className={`fixed top-0 w-full z-50 p-6 flex justify-between items-center transition-all duration-700 backdrop-blur-md ${scrolled ? (isDarkMode ? 'bg-black/40 shadow-xl' : 'bg-white/40 shadow-xl') : 'bg-transparent'}`}>
         <img src="/kiger.png" alt="KIGER" className={`h-8 md:h-9 w-auto cursor-none transition-all duration-500 object-contain ${isDarkMode ? 'mix-blend-screen' : 'invert mix-blend-multiply'}`} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} onMouseEnter={setPtr} onMouseLeave={setDef} decoding="async" />
         <div className="flex items-center gap-6">
           <div className={`hidden md:flex gap-2 px-2 py-2 rounded-full border backdrop-blur-xl transition-all duration-500 shadow-lg ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'}`}>
-            {/* BOTÃO SOBRE CORRIGIDO PARA #ABOUT */}
             {['Portfolio', 'Sobre', 'Contato'].map(item => (
-              <a key={item} href={`#${item === 'Portfolio' ? 'work' : item === 'Sobre' ? 'about' : 'contato'}`} className={`px-6 py-2 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all duration-300 hover:scale-105 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>{item}</a>
+              <a
+                key={item}
+                href={`#${item === 'Portfolio' ? 'work' : item === 'Sobre' ? 'about' : 'contato'}`}
+                className={`px-6 py-2 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all duration-300 hover:scale-105 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+                onMouseEnter={setPtr}
+                onMouseLeave={setDef}
+              >
+                {item}
+              </a>
             ))}
           </div>
           <button onClick={() => setIsDarkMode(!isDarkMode)} onMouseEnter={setPtr} onMouseLeave={setDef} className={`relative w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-xl border transition-all duration-500 cursor-none shadow-lg hover:scale-105 ${isDarkMode ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-black/5 border-black/10 text-black hover:bg-black/5'}`}>
@@ -356,7 +363,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* SOBRE - ID SINCRONIZADO */}
+      {/* SOBRE */}
       <section id="about" className={`py-40 px-6 backdrop-blur-3xl transition-colors duration-700 ${isDarkMode ? 'bg-zinc-950/20' : 'bg-zinc-100/50'}`}>
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
           <CinematicFade>
@@ -379,7 +386,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* CONTATO */}
+      {/* CONTATO - RODA-PE CORRIGIDO */}
       <section id="contato" className={`relative py-32 px-6 overflow-hidden transition-all duration-700 ${isDarkMode ? 'bg-[#050505] shadow-[0_-10px_40px_-10px_rgba(255,255,255,0.05)]' : 'bg-[#ffffff] shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.1)]'}`}>
         <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] blur-[150px] rounded-full pointer-events-none opacity-50 ${isDarkMode ? 'bg-white/5' : 'bg-black/5'}`}></div>
         <div className="max-w-[1200px] mx-auto relative z-10">
@@ -399,14 +406,14 @@ export default function App() {
             </form>
           </div>
           <div className="text-center mb-20"><a href="mailto:contato@kiger.com" onMouseEnter={setPtr} onMouseLeave={setDef} className="group relative inline-block text-3xl md:text-6xl font-black tracking-tighter transition-colors hover:text-zinc-500 cursor-none break-all">CONTATO<span className="text-zinc-500 group-hover:text-zinc-400 transition-colors">@</span>KIGER.COM<span className={`absolute bottom-0 left-0 w-full h-[2px] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out ${isDarkMode ? 'bg-white' : 'bg-black'}`}></span></a></div>
-          <div className="flex flex-col md:flex-row justify-between items-end"><div className="flex flex-col gap-2"><span className={isDarkMode ? 'text-white' : 'text-zinc-900'}>São Paulo, BR</span><span className="text-zinc-500 text-[10px] tracking-widest">DISPONÍVEL GLOBALMENTE</span></div><div className="text-right mt-12 md:mt-0"><span className="text-zinc-500 font-bold block">© 2026 KIGER AV</span><span className="text-zinc-600 text-[8px] uppercase tracking-widest">Todos os direitos reservados</span></div></div>
+          <div className="flex flex-col md:flex-row justify-between items-end"><div className="flex flex-col gap-2"><span className={isDarkMode ? 'text-white' : 'text-zinc-900'}>São Paulo, BR</span><span className="text-zinc-500 text-[10px] tracking-widest">DISPONÍVEL GLOBALMENTE</span></div><div className="text-right mt-12 md:mt-0"><span className="text-zinc-500 font-bold block">© 2026 KIGER</span><span className="text-zinc-600 text-[8px] uppercase tracking-widest">Todos os direitos reservados</span></div></div>
         </div>
       </section>
 
       {/* MODALS */}
       <AnimatePresence>{selectedVideo && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4 md:p-12 cursor-auto modal-open" onClick={() => setSelectedVideo(null)}><motion.div initial={{ scale: 0.9, filter: 'blur(20px)' }} animate={{ scale: 1, filter: 'blur(0px)' }} className="w-full max-w-6xl aspect-video rounded-[40px] overflow-hidden shadow-2xl bg-black" onClick={e => e.stopPropagation()}><iframe src={`${selectedVideo.url}?autoplay=1&rel=0&showinfo=0`} className="w-full h-full" allowFullScreen loading="lazy" /></motion.div><button className="absolute top-8 right-8 text-[10px] font-black tracking-widest uppercase text-white hover:text-red-500 transition-colors" onClick={() => setSelectedVideo(null)}>[ Fechar ]</button></motion.div>)}</AnimatePresence>
 
-      {/* GALERIA MODAL - CURSOR OTIMIZADO */}
+      {/* GALERIA MODAL */}
       <AnimatePresence>{isGalleryOpen && (<motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className={`fixed inset-0 z-[200] overflow-y-auto no-scrollbar ${isDarkMode ? 'bg-black' : 'bg-white'}`}><div className="min-h-screen p-6 md:p-12"><div className="flex justify-between items-center mb-12 sticky top-0 z-50 py-4 backdrop-blur-md"><h2 className={`text-2xl font-black tracking-tighter uppercase ${isDarkMode ? 'text-white' : 'text-black'}`}>LENS<span className="text-zinc-500">.</span></h2><button onClick={() => setIsGalleryOpen(false)} className={`text-[10px] font-bold tracking-widest uppercase border px-6 py-2 rounded-full transition-all backdrop-blur-xl ${isDarkMode ? 'bg-white/10 border-white/20 text-white hover:bg-white/20' : 'bg-black/10 border-black/20 text-black hover:bg-black/20'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>Fechar Galeria</button></div><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{shuffledGallery.map((src, index) => (<motion.div key={index} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: index % 3 * 0.1 }} className="relative group aspect-[4/5] rounded-xl overflow-hidden cursor-none" onMouseEnter={setPtr} onMouseLeave={setDef}><img src={src} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={`Gallery ${index}`} loading="lazy" decoding="async" /><div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-500 pointer-events-none"></div></motion.div>))}</div><div className="mt-20 text-center"><p className="text-zinc-500 text-[10px] tracking-widest uppercase">Fim da Galeria</p></div></div></motion.div>)}</AnimatePresence>
     </div>
   );
