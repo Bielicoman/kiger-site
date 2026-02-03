@@ -274,7 +274,17 @@ export default function App() {
         <div className="flex items-center gap-6">
           <div className={`hidden md:flex gap-2 px-2 py-2 rounded-full border backdrop-blur-xl transition-all duration-500 shadow-lg ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'}`}>
             {['Portfolio', 'Sobre', 'Contato'].map(item => (
-              <a key={item} href={`#${item === 'Portfolio' ? 'work' : item.toLowerCase()}`} className={`px-6 py-2 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all duration-300 hover:scale-105 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>{item}</a>
+              <a
+                key={item}
+                href={item === 'Sobre' ? 'https://www.linkedin.com/in/gabson-sp-405422328/' : `#${item === 'Portfolio' ? 'work' : item.toLowerCase()}`}
+                target={item === 'Sobre' ? "_blank" : "_self"}
+                rel={item === 'Sobre' ? "noopener noreferrer" : ""}
+                className={`px-6 py-2 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all duration-300 hover:scale-105 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
+                onMouseEnter={setPtr}
+                onMouseLeave={setDef}
+              >
+                {item}
+              </a>
             ))}
           </div>
           <button onClick={() => setIsDarkMode(!isDarkMode)} onMouseEnter={setPtr} onMouseLeave={setDef} className={`relative w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-xl border transition-all duration-500 cursor-none shadow-lg hover:scale-105 ${isDarkMode ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-black/5 border-black/10 text-black hover:bg-black/5'}`}>
@@ -400,7 +410,7 @@ export default function App() {
             </form>
           </div>
           <div className="text-center mb-20"><a href="mailto:contato@kiger.com" onMouseEnter={setPtr} onMouseLeave={setDef} className="group relative inline-block text-3xl md:text-6xl font-black tracking-tighter transition-colors hover:text-zinc-500 cursor-none break-all">CONTATO<span className="text-zinc-500 group-hover:text-zinc-400 transition-colors">@</span>KIGER.COM<span className={`absolute bottom-0 left-0 w-full h-[2px] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out ${isDarkMode ? 'bg-white' : 'bg-black'}`}></span></a></div>
-          <div className="flex flex-col md:flex-row justify-between items-end"><div className="flex flex-col gap-2"><span className={isDarkMode ? 'text-white' : 'text-zinc-900'}>São Paulo, BR</span><span className="text-zinc-500 text-[10px] tracking-widest">DISPONÍVEL GLOBALMENTE</span></div><div className="text-right mt-12 md:mt-0"><span className="text-zinc-500 font-bold block">© 2026 KIGER AV</span><span className="text-zinc-600 text-[8px] uppercase tracking-widest">Todos os direitos reservados</span></div></div>
+          <div className="flex flex-col md:flex-row justify-between items-end"><div className="flex flex-col gap-2"><span className={isDarkMode ? 'text-white' : 'text-zinc-900'}>São Paulo, BR</span><span className="text-zinc-500 text-[10px] tracking-widest">DISPONÍVEL GLOBALMENTE</span></div><div className="text-right mt-12 md:mt-0"><span className="text-zinc-500 font-bold block">© 2026 KIGER</span><span className="text-zinc-600 text-[8px] uppercase tracking-widest">Todos os direitos reservados</span></div></div>
         </div>
       </section>
 
