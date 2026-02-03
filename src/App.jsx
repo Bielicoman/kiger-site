@@ -276,12 +276,15 @@ export default function App() {
             {['Portfolio', 'Sobre', 'Contato'].map(item => (
               <a
                 key={item}
-                href={item === 'Sobre' ? 'https://www.linkedin.com/in/gabson-sp-405422328/' : `#${item === 'Portfolio' ? 'work' : item.toLowerCase()}`}
-                target={item === 'Sobre' ? "_blank" : "_self"}
-                rel={item === 'Sobre' ? "noopener noreferrer" : ""}
+                href={`#${item === 'Portfolio' ? 'work' : item === 'Sobre' ? 'about' : item.toLowerCase()}`}
                 className={`px-6 py-2 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all duration-300 hover:scale-105 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
                 onMouseEnter={setPtr}
                 onMouseLeave={setDef}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const id = item === 'Portfolio' ? 'work' : item === 'Sobre' ? 'about' : item.toLowerCase();
+                  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                }}
               >
                 {item}
               </a>
