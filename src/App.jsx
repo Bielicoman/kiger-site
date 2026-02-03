@@ -4,7 +4,6 @@ import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 // --- CONFIGURAÇÃO E DADOS ---
 const CONTACT_NUMBER = "559491441635";
 
-// CAMINHOS DOS ÍCONES (Texto simples para evitar erros de sintaxe)
 const ICON_PATHS = {
   Play: "M8 5v14l11-7z",
   Info: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
@@ -143,9 +142,22 @@ const GALLERY_PHOTOS = [
 ];
 
 // --- SUB-COMPONENTES (MEMO) ---
-const CinematicFade = memo(({ children, delay = 0 }) => (
-  <motion.div initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }} whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}>{children}</motion.div>
-));
+const CinematicFade = memo(({ children, delay = 0 }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+        filter: window.innerWidth < 768 ? ["grayscale(100%) saturate(0%)", "grayscale(0%) saturate(120%)"] : "none"
+      }}
+      viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
+      transition={{ duration: 0.8, delay, ease: "easeOut" }}
+    >
+      {children}
+    </motion.div>
+  );
+});
 
 const SocialLink = memo(({ href, label, color, path, isDarkMode }) => (
   <motion.a href={href} target="_blank" className="group flex flex-col items-center gap-3 relative cursor-none" whileHover={{ y: -5 }}>
@@ -204,7 +216,6 @@ export default function App() {
     { id: 7, title: "O ORÁCULO | TEASER", category: "Teaser", quality: "4K", url: "https://www.youtube.com/embed/T3tudtTkGuQ", thumb: "https://i.ytimg.com/vi_webp/T3tudtTkGuQ/maxresdefault.webp" },
   ], []);
 
-  // SHUFFLE & INIT LOGIC (LAZY STATE)
   const [shuffledGallery] = useState(() => {
     let array = [...GALLERY_PHOTOS, ...GALLERY_PHOTOS];
     let currentIndex = array.length, randomIndex;
@@ -227,7 +238,6 @@ export default function App() {
     return heroArray;
   });
 
-  // TIMER HERO
   useEffect(() => {
     if (heroItems.length === 0) return;
     const interval = setInterval(() => setCurrentHeroIndex(p => (p + 1) % heroItems.length), 14000);
@@ -236,7 +246,6 @@ export default function App() {
 
   const filteredVideos = useMemo(() => selectedCategory === 'all' ? portfolioItems : portfolioItems.filter(v => v.category === selectedCategory), [selectedCategory, portfolioItems]);
 
-  // EVENT LISTENERS (SCROLL & MOUSE)
   useEffect(() => {
     const mouseMove = (e) => { mouseX.set(e.clientX); mouseY.set(e.clientY); };
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -245,7 +254,6 @@ export default function App() {
     return () => { window.removeEventListener("mousemove", mouseMove); window.removeEventListener("scroll", handleScroll); };
   }, [mouseX, mouseY]);
 
-  // HANDLERS
   const handleChange = useCallback((e) => setForm(f => ({ ...f, [e.target.name]: e.target.value })), []);
   const sendToWhatsapp = (e) => {
     e.preventDefault();
@@ -253,7 +261,6 @@ export default function App() {
     window.open(`https://wa.me/${CONTACT_NUMBER}?text=${text}`, '_blank');
   };
 
-  // CURSOR VARIANT HELPERS
   const setPtr = useCallback(() => setCursorVariant("pointer"), []);
   const setDef = useCallback(() => setCursorVariant("default"), []);
 
@@ -261,14 +268,12 @@ export default function App() {
     <div className={`min-h-screen font-['Outfit',_sans-serif] selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700 ${isDarkMode ? 'bg-[#050505] text-white' : 'bg-white text-zinc-900'}`}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } .modal-open { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }`}</style>
 
-      {/* CURSOR */}
       {!selectedVideo && (
         <motion.div className="fixed top-0 left-0 rounded-full pointer-events-none z-[9999] hidden md:flex items-center justify-center mix-blend-difference bg-white" style={{ x: mouseX, y: mouseY, translateX: "-50%", translateY: "-50%" }} animate={{ height: cursorVariant === "pointer" ? 80 : 20, width: cursorVariant === "pointer" ? 80 : 20, boxShadow: cursorVariant === "pointer" ? "0 0 60px 15px rgba(255, 255, 255, 0.8)" : "0 0 20px 5px rgba(255, 255, 255, 0.4)" }} transition={{ type: "tween", ease: "backOut", duration: 0.2 }}>
           {cursorVariant === "pointer" && <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-black"><path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" /></svg></motion.div>}
         </motion.div>
       )}
 
-      {/* NAV */}
       <nav className={`fixed top-0 w-full z-50 p-6 flex justify-between items-center transition-all duration-700 ${scrolled ? (isDarkMode ? 'bg-gradient-to-b from-black/90 via-black/50 to-transparent pb-8 pt-6' : 'bg-gradient-to-b from-white/90 via-white/50 to-transparent pb-8 pt-6') : 'bg-transparent'}`}>
         <img src="/kiger.png" alt="KIGER" className={`h-8 md:h-9 w-auto cursor-none transition-all duration-500 object-contain ${isDarkMode ? 'mix-blend-screen' : 'invert mix-blend-multiply'}`} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} onMouseEnter={setPtr} onMouseLeave={setDef} decoding="async" />
         <div className="flex items-center gap-6">
@@ -297,7 +302,6 @@ export default function App() {
         </div>
       </nav>
 
-      {/* HERO */}
       <section className="relative h-screen w-full overflow-hidden bg-black">
         <AnimatePresence mode="wait">
           {heroItems.length > 0 && (
@@ -325,7 +329,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* CLIENTES */}
       <section className="py-24 overflow-hidden relative z-10 group select-none bg-transparent">
         <div className="absolute inset-0 pointer-events-none z-20" style={{ background: `linear-gradient(90deg, ${isDarkMode ? '#050505' : '#ffffff'} 0%, transparent 20%, transparent 80%, ${isDarkMode ? '#050505' : '#ffffff'} 100%)` }}></div>
         <div className="flex w-full">
@@ -337,26 +340,32 @@ export default function App() {
         </div>
       </section>
 
-      {/* PORTFOLIO */}
       <section id="work" className="py-20 px-6 max-w-[1400px] mx-auto">
         <div className="flex flex-wrap justify-center gap-3 mb-20">
           {CATEGORIES.map(cat => (
             <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} onMouseEnter={setPtr} onMouseLeave={setDef} className={`px-8 py-3 rounded-full text-[9px] uppercase font-bold tracking-widest transition-all duration-300 cursor-none backdrop-blur-xl border shadow-lg hover:scale-105 ${selectedCategory === cat.id ? (isDarkMode ? 'bg-white text-black border-white' : 'bg-black text-white border-black') : (isDarkMode ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-black/5 border-black/10 text-black hover:bg-black/10')}`}>{cat.name}</button>
           ))}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 px-2 md:px-0">
           {filteredVideos.map((item, i) => (
             <CinematicFade key={item.id} delay={i % 3 * 0.1}>
-              <div className={`group relative aspect-video overflow-hidden rounded-[40px] cursor-none shadow-2xl transition-all duration-700 border backdrop-blur-sm ${isDarkMode ? 'bg-zinc-900/50 border-white/10 shadow-white/5' : 'bg-zinc-200/50 border-black/10 shadow-black/5'}`} onMouseEnter={setPtr} onMouseLeave={setDef} onClick={() => setSelectedVideo(item)}>
-                <img src={item.thumb} loading="lazy" decoding="async" className="w-full h-full object-cover opacity-60 grayscale group-hover:scale-110 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700" alt={item.title} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-8 flex flex-col justify-end"><span className="text-[8px] font-bold text-zinc-400 tracking-[0.3em] uppercase">{item.category}</span><h3 className="text-lg font-bold tracking-tight text-white">{item.title}</h3></div>
+              <div
+                className={`group relative aspect-[2/3] md:aspect-video overflow-hidden rounded-xl md:rounded-[40px] cursor-none shadow-2xl transition-all duration-700 border backdrop-blur-sm ${isDarkMode ? 'bg-zinc-900/50 border-white/10' : 'bg-zinc-200/50 border-black/10'}`}
+                onClick={() => setSelectedVideo(item)}
+                onMouseEnter={setPtr}
+                onMouseLeave={setDef}
+              >
+                <img src={item.thumb} loading="lazy" decoding="async" className="w-full h-full object-cover transition-all duration-700" alt={item.title} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent p-4 flex flex-col justify-end">
+                  <span className="text-[7px] md:text-[8px] font-bold text-zinc-400 tracking-widest uppercase">{item.category}</span>
+                  <h3 className="text-sm md:text-lg font-bold text-white leading-tight">{item.title}</h3>
+                </div>
               </div>
             </CinematicFade>
           ))}
         </div>
       </section>
 
-      {/* GALERIA LENS */}
       <section className="py-32 px-6 overflow-hidden relative group">
         <CinematicFade>
           <div className="max-w-[1400px] mx-auto mb-12 flex items-end justify-between cursor-none" onClick={() => setIsGalleryOpen(true)} onMouseEnter={setPtr} onMouseLeave={setDef}>
@@ -370,7 +379,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* SOBRE */}
       <section id="about" className={`py-40 px-6 backdrop-blur-3xl transition-colors duration-700 ${isDarkMode ? 'bg-zinc-950/20' : 'bg-zinc-100/50'}`}>
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
           <CinematicFade>
@@ -393,7 +401,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* CONTATO */}
       <section id="contato" className={`relative py-32 px-6 overflow-hidden transition-all duration-700 ${isDarkMode ? 'bg-[#050505] shadow-[0_-10px_40px_-10px_rgba(255,255,255,0.05)]' : 'bg-[#ffffff] shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.1)]'}`}>
         <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] blur-[150px] rounded-full pointer-events-none opacity-50 ${isDarkMode ? 'bg-white/5' : 'bg-black/5'}`}></div>
         <div className="max-w-[1200px] mx-auto relative z-10">
@@ -417,7 +424,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* MODALS */}
       <AnimatePresence>{selectedVideo && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4 md:p-12 cursor-auto modal-open" onClick={() => setSelectedVideo(null)}><motion.div initial={{ scale: 0.9, filter: 'blur(20px)' }} animate={{ scale: 1, filter: 'blur(0px)' }} className="w-full max-w-6xl aspect-video rounded-[40px] overflow-hidden shadow-2xl bg-black" onClick={e => e.stopPropagation()}><iframe src={`${selectedVideo.url}?autoplay=1&rel=0&showinfo=0`} className="w-full h-full" allowFullScreen loading="lazy" /></motion.div><button className="absolute top-8 right-8 text-[10px] font-black tracking-widest uppercase text-white hover:text-red-500 transition-colors" onClick={() => setSelectedVideo(null)}>[ Fechar ]</button></motion.div>)}</AnimatePresence>
       <AnimatePresence>{isGalleryOpen && (<motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className={`fixed inset-0 z-[200] overflow-y-auto no-scrollbar ${isDarkMode ? 'bg-black' : 'bg-white'}`}><div className="min-h-screen p-6 md:p-12"><div className="flex justify-between items-center mb-12 sticky top-0 z-50 py-4 backdrop-blur-md"><h2 className={`text-2xl font-black tracking-tighter uppercase ${isDarkMode ? 'text-white' : 'text-black'}`}>LENS<span className="text-zinc-500">.</span></h2><button onClick={() => setIsGalleryOpen(false)} className={`text-[10px] font-bold tracking-widest uppercase border px-6 py-2 rounded-full transition-all backdrop-blur-xl ${isDarkMode ? 'border-white text-white hover:bg-white hover:text-black' : 'border-black text-black hover:bg-black hover:text-white'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>Fechar Galeria</button></div><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{shuffledGallery.map((src, index) => (<motion.div key={index} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: index % 3 * 0.1 }} className="relative group aspect-[4/5] rounded-xl overflow-hidden cursor-none" onMouseEnter={setPtr} onMouseLeave={setDef}><img src={src} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={`Gallery ${index}`} loading="lazy" decoding="async" /><div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-500 pointer-events-none"></div></motion.div>))}</div><div className="mt-20 text-center"><p className="text-zinc-500 text-[10px] tracking-widest uppercase">Fim da Galeria</p></div></div></motion.div>)}</AnimatePresence>
     </div>
