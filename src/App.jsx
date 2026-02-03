@@ -149,7 +149,10 @@ const CinematicFade = memo(({ children, delay = 0 }) => {
       whileInView={{
         opacity: 1,
         y: 0,
-        filter: window.innerWidth < 768 ? ["grayscale(100%) saturate(0%)", "grayscale(0%) saturate(120%)"] : "none"
+        // Efeito exclusivo Mobile: Saturação muda no scroll
+        filter: typeof window !== 'undefined' && window.innerWidth < 768
+          ? ["grayscale(100%) saturate(0%)", "grayscale(0%) saturate(120%)"]
+          : "none"
       }}
       viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
       transition={{ duration: 0.8, delay, ease: "easeOut" }}
@@ -346,16 +349,26 @@ export default function App() {
             <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} onMouseEnter={setPtr} onMouseLeave={setDef} className={`px-8 py-3 rounded-full text-[9px] uppercase font-bold tracking-widest transition-all duration-300 cursor-none backdrop-blur-xl border shadow-lg hover:scale-105 ${selectedCategory === cat.id ? (isDarkMode ? 'bg-white text-black border-white' : 'bg-black text-white border-black') : (isDarkMode ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-black/5 border-black/10 text-black hover:bg-black/10')}`}>{cat.name}</button>
           ))}
         </div>
+
+        {/* GRID DE PORTFÓLIO: 2 colunas no mobile, Netflix Style */}
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 px-2 md:px-0">
           {filteredVideos.map((item, i) => (
             <CinematicFade key={item.id} delay={i % 3 * 0.1}>
               <div
-                className={`group relative aspect-[2/3] md:aspect-video overflow-hidden rounded-xl md:rounded-[40px] cursor-none shadow-2xl transition-all duration-700 border backdrop-blur-sm ${isDarkMode ? 'bg-zinc-900/50 border-white/10' : 'bg-zinc-200/50 border-black/10'}`}
+                className={`group relative aspect-[2/3] md:aspect-video overflow-hidden rounded-xl md:rounded-[40px] cursor-none shadow-2xl transition-all duration-700 border backdrop-blur-sm ${isDarkMode ? 'bg-zinc-900/50 border-white/10 shadow-white/5' : 'bg-zinc-200/50 border-black/10 shadow-black/5'}`}
                 onClick={() => setSelectedVideo(item)}
                 onMouseEnter={setPtr}
                 onMouseLeave={setDef}
               >
-                <img src={item.thumb} loading="lazy" decoding="async" className="w-full h-full object-cover transition-all duration-700" alt={item.title} />
+                <img
+                  src={item.thumb}
+                  loading="lazy"
+                  decoding="async"
+                  // No Desktop (md:), volta a ser P&B e satura no hover
+                  // No Mobile, a cor é controlada pelo filtro dinâmico do CinematicFade
+                  className="w-full h-full object-cover transition-all duration-700 md:grayscale md:group-hover:grayscale-0 md:group-hover:scale-110"
+                  alt={item.title}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent p-4 flex flex-col justify-end">
                   <span className="text-[7px] md:text-[8px] font-bold text-zinc-400 tracking-widest uppercase">{item.category}</span>
                   <h3 className="text-sm md:text-lg font-bold text-white leading-tight">{item.title}</h3>
