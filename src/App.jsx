@@ -269,7 +269,7 @@ export default function App() {
 
   return (
     <div className={`min-h-screen font-['Outfit',_sans-serif] selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700 ${isDarkMode ? 'bg-[#050505] text-white' : 'bg-white text-zinc-900'}`}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } .modal-open { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } .modal-open, .modal-open * { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }`}</style>
 
       {!selectedVideo && (
         <motion.div className="fixed top-0 left-0 rounded-full pointer-events-none z-[9999] hidden md:flex items-center justify-center mix-blend-difference bg-white" style={{ x: mouseX, y: mouseY, translateX: "-50%", translateY: "-50%" }} animate={{ height: cursorVariant === "pointer" ? 80 : 20, width: cursorVariant === "pointer" ? 80 : 20, boxShadow: cursorVariant === "pointer" ? "0 0 60px 15px rgba(255, 255, 255, 0.8)" : "0 0 20px 5px rgba(255, 255, 255, 0.4)" }} transition={{ type: "tween", ease: "backOut", duration: 0.2 }}>
