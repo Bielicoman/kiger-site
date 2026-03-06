@@ -421,7 +421,7 @@ export default function App() {
               Em Breve
             </span>
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-6">
-              Gabrielle Stelli<span className="text-zinc-500">.</span>
+              Gabriela Stehling<span className="text-zinc-500">.</span>
             </h2>
             <p className="text-zinc-500 text-lg leading-relaxed font-light max-w-2xl mx-auto">
               Novos projetos e colaborações exclusivas estão em desenvolvimento. Fique de olho para atualizações futuras.
