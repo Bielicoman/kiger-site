@@ -205,6 +205,7 @@ export default function App() {
     { id: 18, title: "HOSPEDANDO ANJOS SEM SABER", category: "Clipe", quality: "HD", url: "https://www.youtube.com/embed/htIKc_vVDt0", thumb: "https://i.ytimg.com/vi_webp/htIKc_vVDt0/maxresdefault.webp" },
     { id: 27, title: "OUÇO O SOM", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/Ocdq3_uzO4o", thumb: "https://i.ytimg.com/vi_webp/Ocdq3_uzO4o/maxresdefault.webp" },
     { id: 19, title: "O MELHOR DE MIM", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/D43qNYNIIOA", thumb: "https://i.ytimg.com/vi_webp/D43qNYNIIOA/maxresdefault.webp" },
+    { id: 31, title: "FOI EM MEU LUGAR", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/MqIsul0I_to", thumb: "https://i.ytimg.com/vi_webp/MqIsul0I_to/maxresdefault.webp" },
     { id: 25, title: "LEMBRA", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/DAglqbQTK4c", thumb: "https://i.ytimg.com/vi_webp/DAglqbQTK4c/maxresdefault.webp" },
     { id: 24, title: "O PESO DAS PALAVRAS", category: "Cinema", quality: "4K", url: "https://www.youtube.com/embed/h5vbvGte3oM", thumb: "https://i.ytimg.com/vi_webp/h5vbvGte3oM/maxresdefault.webp" },
     { id: 16, title: "NÃO ME ENVERGONHO DO EVANGELHIO", category: "Clipe", quality: "HD", url: "https://www.youtube.com/embed/ijf0p0naTcg", thumb: "https://i.ytimg.com/vi_webp/ijf0p0naTcg/maxresdefault.webp" },
