@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Black circle background -->
+  <circle cx="32" cy="32" r="32" fill="#000000"/>
+  <!-- Kiger-style "E" — three horizontal bars, all aligned -->
+  <!-- Top bar -->
+  <rect x="17" y="16" width="30" height="7" rx="1.5" fill="#FFFFFF"/>
+  <!-- Middle bar (same width as top and bottom) -->
+  <rect x="17" y="28.5" width="30" height="7" rx="1.5" fill="#FFFFFF"/>
+  <!-- Bottom bar -->
+  <rect x="17" y="41" width="30" height="7" rx="1.5" fill="#FFFFFF"/>
+</svg>
