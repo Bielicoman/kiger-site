@@ -193,6 +193,7 @@ export default function App() {
 
   // DATABASE VIDEOS
   const portfolioItems = useMemo(() => [
+    { id: 30, title: "GABRIELLA STEHLING - COVERS", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/yrkck9BhKqo", thumb: "https://i.ytimg.com/vi_webp/yrkck9BhKqo/maxresdefault.webp", featured: true },
     { id: 1, title: "QUAL É O SEU PROPÓSITO?", category: "Documentário", quality: "4K", url: "https://www.youtube.com/embed/bU2cVO3vUjw", thumb: "https://i.ytimg.com/vi_webp/bU2cVO3vUjw/maxresdefault.webp" },
     { id: 2, title: "Karoline & Winiston", category: "Casamento", quality: "4K", url: "https://www.youtube.com/embed/njXorYxbRfU", thumb: "https://i.ytimg.com/vi_webp/njXorYxbRfU/maxresdefault.webp" },
     { id: 5, title: "O ORÁCULO", category: "Reality Show", quality: "4K", url: "https://www.youtube.com/embed/efa_PSKMHLk", thumb: "https://i.ytimg.com/vi_webp/efa_PSKMHLk/maxresdefault.webp" },
@@ -294,7 +295,7 @@ export default function App() {
 
   return (
     <div className={`min-h-screen font-['Outfit',_sans-serif] selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700 ${isDarkMode ? 'bg-[#050505] text-white' : 'bg-white text-zinc-900'}`}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); @media(min-width:768px){ body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } } .modal-open, .modal-open * { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } .drag-scroll { cursor: grab; overflow-x: auto; -webkit-overflow-scrolling: touch; } .drag-scroll::-webkit-scrollbar { display: none; } .drag-scroll { scrollbar-width: none; } html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; } body { overscroll-behavior-y: contain; }`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); @media(min-width:768px){ body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } } .modal-open, .modal-open * { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } .drag-scroll { cursor: grab; overflow-x: auto; -webkit-overflow-scrolling: touch; } .drag-scroll::-webkit-scrollbar { display: none; } .drag-scroll { scrollbar-width: none; } html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; } body { overscroll-behavior-y: contain; } @keyframes gallery-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } .gallery-auto-scroll { animation: gallery-scroll 120s linear infinite; } .gallery-auto-scroll:hover, .gallery-auto-scroll.is-dragging { animation-play-state: paused; }`}</style>
 
       {!selectedVideo && (
         <motion.div className="fixed top-0 left-0 rounded-full pointer-events-none z-[9999] hidden md:flex items-center justify-center mix-blend-difference bg-white" style={{ x: mouseX, y: mouseY, translateX: "-50%", translateY: "-50%" }} animate={{ height: cursorVariant === "pointer" ? 80 : 20, width: cursorVariant === "pointer" ? 80 : 20, boxShadow: cursorVariant === "pointer" ? "0 0 60px 15px rgba(255, 255, 255, 0.8)" : "0 0 20px 5px rgba(255, 255, 255, 0.4)" }} transition={{ type: "tween", ease: "backOut", duration: 0.2 }}>
@@ -422,23 +423,40 @@ export default function App() {
             <div><span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] mb-3 md:mb-4 ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>Fotografia</span><h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase">Lens<span className="text-zinc-500">.</span></h2><span className="text-[8px] md:text-[9px] text-zinc-500 tracking-widest mt-2 block">[ TOQUE PARA VER A GALERIA ]</span></div>
           </div>
         </CinematicFade>
-        <div
-          ref={galleryRef}
-          className="flex w-full gap-4 drag-scroll no-scrollbar py-4"
-          onMouseDown={handleGalleryMouseDown}
-          onMouseMove={handleGalleryMouseMove}
-          onMouseUp={handleGalleryMouseUp}
-          onMouseLeave={handleGalleryMouseUp}
-        >
-          {shuffledGallery.slice(0, 30).map((src, index) => (
-            <div
-              key={index}
-              className="relative w-[220px] md:w-[400px] aspect-[4/5] flex-shrink-0 rounded-xl md:rounded-2xl overflow-hidden"
-              onClick={(e) => { if (!isDragging.current) setIsGalleryOpen(true); }}
-            >
-              <img src={src} loading="lazy" decoding="async" className="w-full h-full object-cover transition-all duration-700 hover:scale-110 pointer-events-none" alt={`Gallery ${index}`} />
-            </div>
-          ))}
+        <div className="overflow-hidden w-full">
+          <div
+            ref={galleryRef}
+            className={`flex gap-4 py-4 gallery-auto-scroll ${isDragging.current ? 'is-dragging' : ''}`}
+            style={{ width: 'max-content' }}
+            onMouseDown={(e) => {
+              isDragging.current = true;
+              startX.current = e.pageX;
+              scrollLeft.current = galleryRef.current?.getBoundingClientRect().left || 0;
+              galleryRef.current?.classList.add('is-dragging');
+            }}
+            onMouseMove={(e) => {
+              if (!isDragging.current) return;
+              e.preventDefault();
+            }}
+            onMouseUp={() => {
+              isDragging.current = false;
+              galleryRef.current?.classList.remove('is-dragging');
+            }}
+            onMouseLeave={() => {
+              isDragging.current = false;
+              galleryRef.current?.classList.remove('is-dragging');
+            }}
+          >
+            {[...shuffledGallery.slice(0, 20), ...shuffledGallery.slice(0, 20)].map((src, index) => (
+              <div
+                key={index}
+                className="relative w-[220px] md:w-[400px] aspect-[4/5] flex-shrink-0 rounded-xl md:rounded-2xl overflow-hidden"
+                onClick={(e) => { if (!isDragging.current) setIsGalleryOpen(true); }}
+              >
+                <img src={src} loading="lazy" decoding="async" className="w-full h-full object-cover transition-all duration-700 hover:scale-110 pointer-events-none" alt={`Gallery ${index}`} />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -468,14 +486,23 @@ export default function App() {
         <div className="max-w-[1200px] mx-auto text-center">
           <CinematicFade>
             <span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] mb-4 ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>
-              Em Breve
+              Lançamento
             </span>
             <h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase mb-4 md:mb-6">
               Gabriella Stehling<span className="text-zinc-500">.</span>
             </h2>
-            <p className="text-zinc-500 text-lg leading-relaxed font-light max-w-2xl mx-auto">
-              Novos projetos e colaborações exclusivas estão em desenvolvimento. Fique de olho para atualizações futuras.
+            <p className="text-zinc-500 text-lg leading-relaxed font-light max-w-2xl mx-auto mb-8">
+              O projeto Covers de Gabriella Stehling acaba de ser lançado! Assista agora ao clipe exclusivo produzido pela KIGER.
             </p>
+            <button
+              onClick={() => setSelectedVideo({ url: 'https://www.youtube.com/embed/yrkck9BhKqo' })}
+              onMouseEnter={setPtr}
+              onMouseLeave={setDef}
+              className={`inline-flex items-center gap-3 px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs border transition-all duration-300 hover:scale-105 shadow-lg ${isDarkMode ? 'bg-white text-black border-white hover:bg-white/90' : 'bg-black text-white border-black hover:bg-black/90'}`}
+            >
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d={ICON_PATHS.Play} /></svg>
+              Assistir Agora
+            </button>
           </CinematicFade>
         </div>
       </section>
