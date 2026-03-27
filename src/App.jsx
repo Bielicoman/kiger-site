@@ -183,6 +183,7 @@ export default function App() {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // DATABASE VIDEOS
   const portfolioItems = useMemo(() => [
@@ -287,7 +288,7 @@ export default function App() {
 
   return (
     <div className={`min-h-screen font-['Outfit',_sans-serif] selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700 ${isDarkMode ? 'bg-[#050505] text-white' : 'bg-white text-zinc-900'}`}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } .modal-open, .modal-open * { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } .drag-scroll { cursor: grab; overflow-x: auto; -webkit-overflow-scrolling: touch; } .drag-scroll::-webkit-scrollbar { display: none; } .drag-scroll { scrollbar-width: none; }`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); @media(min-width:768px){ body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } } .modal-open, .modal-open * { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } .drag-scroll { cursor: grab; overflow-x: auto; -webkit-overflow-scrolling: touch; } .drag-scroll::-webkit-scrollbar { display: none; } .drag-scroll { scrollbar-width: none; } html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; } body { overscroll-behavior-y: contain; }`}</style>
 
       {!selectedVideo && (
         <motion.div className="fixed top-0 left-0 rounded-full pointer-events-none z-[9999] hidden md:flex items-center justify-center mix-blend-difference bg-white" style={{ x: mouseX, y: mouseY, translateX: "-50%", translateY: "-50%" }} animate={{ height: cursorVariant === "pointer" ? 80 : 20, width: cursorVariant === "pointer" ? 80 : 20, boxShadow: cursorVariant === "pointer" ? "0 0 60px 15px rgba(255, 255, 255, 0.8)" : "0 0 20px 5px rgba(255, 255, 255, 0.4)" }} transition={{ type: "tween", ease: "backOut", duration: 0.2 }}>
@@ -295,33 +296,45 @@ export default function App() {
         </motion.div>
       )}
 
-      <nav className={`fixed top-0 w-full z-50 p-6 flex justify-between items-center transition-all duration-700 ${scrolled ? (isDarkMode ? 'bg-gradient-to-b from-black/90 via-black/50 to-transparent pb-8 pt-6' : 'bg-gradient-to-b from-white/90 via-white/50 to-transparent pb-8 pt-6') : 'bg-transparent'}`}>
-        <img src="/kiger.png" alt="KIGER" className={`h-8 md:h-9 w-auto cursor-none transition-all duration-500 object-contain ${isDarkMode ? 'mix-blend-screen' : 'invert mix-blend-multiply'}`} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} onMouseEnter={setPtr} onMouseLeave={setDef} decoding="async" />
-        <div className="flex items-center gap-6">
+      <nav className={`fixed top-0 w-full z-50 px-4 py-3 md:p-6 flex justify-between items-center transition-all duration-700 ${scrolled ? (isDarkMode ? 'bg-gradient-to-b from-black/95 via-black/60 to-transparent pb-6 pt-3 md:pb-8 md:pt-6' : 'bg-gradient-to-b from-white/95 via-white/60 to-transparent pb-6 pt-3 md:pb-8 md:pt-6') : 'bg-transparent'}`}>
+        <img src="/kiger.png" alt="KIGER" className={`h-7 md:h-9 w-auto transition-all duration-500 object-contain ${isDarkMode ? 'mix-blend-screen' : 'invert mix-blend-multiply'}`} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} onMouseEnter={setPtr} onMouseLeave={setDef} decoding="async" />
+        <div className="flex items-center gap-3 md:gap-6">
           <div className={`hidden md:flex gap-2 px-2 py-2 rounded-full border backdrop-blur-xl transition-all duration-500 shadow-lg ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'}`}>
             {['Portfolio', 'Sobre', 'Em Breve', 'Contato'].map(item => (
-              <a
-                key={item}
-                href={`#${item === 'Portfolio' ? 'work' : item === 'Sobre' ? 'about' : item === 'Em Breve' ? 'em-breve' : item.toLowerCase()}`}
+              <a key={item} href={`#${item === 'Portfolio' ? 'work' : item === 'Sobre' ? 'about' : item === 'Em Breve' ? 'em-breve' : item.toLowerCase()}`}
                 className={`px-6 py-2 rounded-full text-[10px] uppercase font-bold tracking-widest transition-all duration-300 hover:scale-105 ${isDarkMode ? 'text-white hover:bg-white/10' : 'text-black hover:bg-black/5'}`}
-                onMouseEnter={setPtr}
-                onMouseLeave={setDef}
-                onClick={(e) => {
-                  e.preventDefault();
-                  const id = item === 'Portfolio' ? 'work' : item === 'Sobre' ? 'about' : item === 'Em Breve' ? 'em-breve' : item.toLowerCase();
-                  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-                }}
-              >
+                onMouseEnter={setPtr} onMouseLeave={setDef}
+                onClick={(e) => { e.preventDefault(); const id = item === 'Portfolio' ? 'work' : item === 'Sobre' ? 'about' : item === 'Em Breve' ? 'em-breve' : item.toLowerCase(); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); }}>
                 {item}
               </a>
             ))}
           </div>
-          <button onClick={() => setIsDarkMode(!isDarkMode)} onMouseEnter={setPtr} onMouseLeave={setDef} className={`relative w-12 h-12 rounded-full flex items-center justify-center backdrop-blur-xl border transition-all duration-500 cursor-none shadow-lg hover:scale-105 ${isDarkMode ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-black/5 border-black/10 text-black hover:bg-black/5'}`}>
-            <motion.svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 absolute inset-0 m-auto" variants={{ dark: { rotate: 90, scale: 0, opacity: 0 }, light: { rotate: 0, scale: 1, opacity: 1 } }} initial={isDarkMode ? "dark" : "light"} animate={isDarkMode ? "dark" : "light"} transition={{ type: "spring", stiffness: 200, damping: 15 }}><path d={ICON_PATHS.Sun} /></motion.svg>
-            <motion.svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="w-5 h-5 absolute inset-0 m-auto" variants={{ dark: { rotate: 0, scale: 1, opacity: 1 }, light: { rotate: -90, scale: 0, opacity: 0 } }} initial={isDarkMode ? "dark" : "light"} animate={isDarkMode ? "dark" : "light"} transition={{ type: "spring", stiffness: 200, damping: 15 }}><path d={ICON_PATHS.Moon} /></motion.svg>
+          <button onClick={() => setIsDarkMode(!isDarkMode)} onMouseEnter={setPtr} onMouseLeave={setDef} className={`relative w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center backdrop-blur-xl border transition-all duration-500 shadow-lg hover:scale-105 ${isDarkMode ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-black/5 border-black/10 text-black hover:bg-black/5'}`}>
+            <motion.svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 md:w-5 md:h-5 absolute inset-0 m-auto" variants={{ dark: { rotate: 90, scale: 0, opacity: 0 }, light: { rotate: 0, scale: 1, opacity: 1 } }} initial={isDarkMode ? "dark" : "light"} animate={isDarkMode ? "dark" : "light"} transition={{ type: "spring", stiffness: 200, damping: 15 }}><path d={ICON_PATHS.Sun} /></motion.svg>
+            <motion.svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none" className="w-4 h-4 md:w-5 md:h-5 absolute inset-0 m-auto" variants={{ dark: { rotate: 0, scale: 1, opacity: 1 }, light: { rotate: -90, scale: 0, opacity: 0 } }} initial={isDarkMode ? "dark" : "light"} animate={isDarkMode ? "dark" : "light"} transition={{ type: "spring", stiffness: 200, damping: 15 }}><path d={ICON_PATHS.Moon} /></motion.svg>
+          </button>
+          {/* Mobile hamburger */}
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className={`md:hidden relative w-10 h-10 rounded-full flex flex-col items-center justify-center gap-1.5 backdrop-blur-xl border transition-all duration-500 shadow-lg ${isDarkMode ? 'bg-white/5 border-white/10 text-white' : 'bg-black/5 border-black/10 text-black'}`}>
+            <motion.span animate={{ rotate: mobileMenuOpen ? 45 : 0, y: mobileMenuOpen ? 6 : 0 }} className={`block w-4 h-[2px] rounded-full transition-colors ${isDarkMode ? 'bg-white' : 'bg-black'}`} />
+            <motion.span animate={{ opacity: mobileMenuOpen ? 0 : 1 }} className={`block w-4 h-[2px] rounded-full transition-colors ${isDarkMode ? 'bg-white' : 'bg-black'}`} />
+            <motion.span animate={{ rotate: mobileMenuOpen ? -45 : 0, y: mobileMenuOpen ? -6 : 0 }} className={`block w-4 h-[2px] rounded-full transition-colors ${isDarkMode ? 'bg-white' : 'bg-black'}`} />
           </button>
         </div>
       </nav>
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className={`fixed top-16 left-0 right-0 z-40 md:hidden px-4 py-6 flex flex-col gap-1 backdrop-blur-2xl border-b ${isDarkMode ? 'bg-black/90 border-white/10' : 'bg-white/90 border-black/10'}`}>
+            {['Portfolio', 'Sobre', 'Em Breve', 'Contato'].map(item => (
+              <a key={item} href="#" className={`py-3 px-4 rounded-xl text-sm uppercase font-bold tracking-widest transition-all active:scale-95 ${isDarkMode ? 'text-white active:bg-white/10' : 'text-black active:bg-black/5'}`}
+                onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); const id = item === 'Portfolio' ? 'work' : item === 'Sobre' ? 'about' : item === 'Em Breve' ? 'em-breve' : item.toLowerCase(); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 300); }}>
+                {item}
+              </a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <section className="relative h-screen w-full overflow-hidden bg-black">
         <AnimatePresence mode="wait">
@@ -333,16 +346,16 @@ export default function App() {
             </motion.div>
           )}
         </AnimatePresence>
-        <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-16 lg:px-24 z-10 max-w-5xl h-full pb-20 md:pb-0">
+        <div className="absolute inset-0 flex flex-col justify-end md:justify-center px-5 md:px-16 lg:px-24 z-10 max-w-5xl h-full pb-24 md:pb-0">
           <AnimatePresence mode="wait">
             {heroItems.length > 0 && (
-              <motion.div key={currentHeroIndex} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.8, ease: "easeOut" }} className="flex flex-col gap-6 items-start">
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter text-white uppercase drop-shadow-2xl leading-tight max-w-lg">{heroItems[currentHeroIndex].title}</h1>
-                <div className="flex items-center gap-4 text-sm font-medium text-white/90 tracking-widest uppercase"><span>2026</span><span className="text-zinc-500">|</span><span>{heroItems[currentHeroIndex].category}</span><span className="text-zinc-500">|</span><span className="border border-white/20 px-2 py-0.5 rounded text-[10px]">{heroItems[currentHeroIndex].quality}</span></div>
-                <p className="text-white/60 max-w-lg text-sm md:text-base font-light leading-relaxed">Uma produção audiovisual com a assinatura KIGER. Mergulhe em narrativas visuais que transformam momentos em cinema.</p>
-                <div className="flex items-center gap-4 mt-4">
-                  <button onClick={() => setSelectedVideo(heroItems[currentHeroIndex])} className="flex items-center gap-3 bg-white text-black px-8 py-3 rounded-md font-bold hover:bg-white/90 transition-colors uppercase tracking-widest text-xs shadow-xl" onMouseEnter={setPtr} onMouseLeave={setDef}><svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d={ICON_PATHS.Play} /></svg>Assistir</button>
-                  <button onClick={() => document.getElementById('work').scrollIntoView({ behavior: 'smooth' })} className="flex items-center gap-3 bg-white/10 border border-white/20 text-white px-8 py-3 rounded-md font-bold backdrop-blur-xl hover:bg-white/20 hover:scale-105 transition-all duration-300 uppercase tracking-widest text-xs shadow-lg" onMouseEnter={setPtr} onMouseLeave={setDef}><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={ICON_PATHS.Info} /></svg>Mais Info</button>
+              <motion.div key={currentHeroIndex} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.8, ease: "easeOut" }} className="flex flex-col gap-4 md:gap-6 items-start">
+                <h1 className="text-2xl md:text-5xl lg:text-6xl font-black tracking-tighter text-white uppercase drop-shadow-2xl leading-[1.1] max-w-lg">{heroItems[currentHeroIndex].title}</h1>
+                <div className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-medium text-white/90 tracking-widest uppercase"><span>2026</span><span className="text-zinc-500">|</span><span>{heroItems[currentHeroIndex].category}</span><span className="text-zinc-500">|</span><span className="border border-white/20 px-2 py-0.5 rounded text-[9px] md:text-[10px]">{heroItems[currentHeroIndex].quality}</span></div>
+                <p className="text-white/60 max-w-lg text-xs md:text-base font-light leading-relaxed hidden md:block">Uma produção audiovisual com a assinatura KIGER. Mergulhe em narrativas visuais que transformam momentos em cinema.</p>
+                <div className="flex items-center gap-3 mt-2 md:mt-4 w-full md:w-auto">
+                  <button onClick={() => setSelectedVideo(heroItems[currentHeroIndex])} className="flex items-center justify-center gap-2 md:gap-3 bg-white text-black px-5 md:px-8 py-3 rounded-lg md:rounded-md font-bold hover:bg-white/90 transition-colors uppercase tracking-widest text-[10px] md:text-xs shadow-xl flex-1 md:flex-none" onMouseEnter={setPtr} onMouseLeave={setDef}><svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d={ICON_PATHS.Play} /></svg>Assistir</button>
+                  <button onClick={() => document.getElementById('work').scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-center gap-2 md:gap-3 bg-white/10 border border-white/20 text-white px-5 md:px-8 py-3 rounded-lg md:rounded-md font-bold backdrop-blur-xl hover:bg-white/20 transition-all duration-300 uppercase tracking-widest text-[10px] md:text-xs shadow-lg flex-1 md:flex-none" onMouseEnter={setPtr} onMouseLeave={setDef}><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={ICON_PATHS.Info} /></svg>Mais Info</button>
                 </div>
               </motion.div>
             )}
@@ -350,7 +363,7 @@ export default function App() {
         </div>
       </section>
 
-      <section className="py-24 overflow-hidden relative z-10 group select-none bg-transparent">
+      <section className="py-12 md:py-24 overflow-hidden relative z-10 group select-none bg-transparent">
         <div className="absolute inset-0 pointer-events-none z-20" style={{ background: `linear-gradient(90deg, ${isDarkMode ? '#050505' : '#ffffff'} 0%, transparent 20%, transparent 80%, ${isDarkMode ? '#050505' : '#ffffff'} 100%)` }}></div>
         <div className="flex w-full">
           {[1, 2].map((_, idx) => (
@@ -361,19 +374,19 @@ export default function App() {
         </div>
       </section>
 
-      <section id="work" className="py-20 px-6 max-w-[1400px] mx-auto">
-        <div className="flex flex-wrap justify-center gap-3 mb-20">
+      <section id="work" className="py-12 md:py-20 px-4 md:px-6 max-w-[1400px] mx-auto">
+        <div className="flex flex-nowrap md:flex-wrap gap-2 md:gap-3 mb-10 md:mb-20 overflow-x-auto no-scrollbar pb-2 md:justify-center px-1">
           {CATEGORIES.map(cat => (
-            <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} onMouseEnter={setPtr} onMouseLeave={setDef} className={`px-8 py-3 rounded-full text-[9px] uppercase font-bold tracking-widest transition-all duration-300 cursor-none backdrop-blur-xl border shadow-lg hover:scale-105 ${selectedCategory === cat.id ? (isDarkMode ? 'bg-white text-black border-white' : 'bg-black text-white border-black') : (isDarkMode ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-black/5 border-black/10 text-black hover:bg-black/10')}`}>{cat.name}</button>
+            <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} onMouseEnter={setPtr} onMouseLeave={setDef} className={`px-5 md:px-8 py-2.5 md:py-3 rounded-full text-[9px] uppercase font-bold tracking-widest transition-all duration-300 backdrop-blur-xl border shadow-lg hover:scale-105 flex-shrink-0 ${selectedCategory === cat.id ? (isDarkMode ? 'bg-white text-black border-white' : 'bg-black text-white border-black') : (isDarkMode ? 'bg-white/5 border-white/10 text-white hover:bg-white/10' : 'bg-black/5 border-black/10 text-black hover:bg-black/10')}`}>{cat.name}</button>
           ))}
         </div>
 
-        {/* GRID DE PORTFÓLIO: 2 colunas no mobile, Netflix Style */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 px-2 md:px-0">
+        {/* GRID DE PORTFÓLIO */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-8">
           {filteredVideos.map((item, i) => (
             <CinematicFade key={item.id} delay={i % 3 * 0.1}>
               <div
-                className={`group relative aspect-[2/3] md:aspect-video overflow-hidden rounded-xl md:rounded-[40px] cursor-none shadow-2xl transition-all duration-700 border backdrop-blur-sm ${isDarkMode ? 'bg-zinc-900/50 border-white/10 shadow-white/5' : 'bg-zinc-200/50 border-black/10 shadow-black/5'}`}
+                className={`group relative aspect-[2/3] md:aspect-video overflow-hidden rounded-2xl md:rounded-[40px] shadow-xl md:shadow-2xl transition-all duration-700 border backdrop-blur-sm active:scale-[0.98] ${isDarkMode ? 'bg-zinc-900/50 border-white/5 shadow-white/5' : 'bg-zinc-200/50 border-black/5 shadow-black/5'}`}
                 onClick={() => setSelectedVideo(item)}
                 onMouseEnter={setPtr}
                 onMouseLeave={setDef}
@@ -387,9 +400,9 @@ export default function App() {
                   className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                   alt={item.title}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent p-4 flex flex-col justify-end">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-3 md:p-4 flex flex-col justify-end">
                   <span className="text-[7px] md:text-[8px] font-bold text-zinc-400 tracking-widest uppercase">{item.category}</span>
-                  <h3 className="text-sm md:text-lg font-bold text-white leading-tight">{item.title}</h3>
+                  <h3 className="text-xs md:text-lg font-bold text-white leading-tight line-clamp-2">{item.title}</h3>
                 </div>
               </div>
             </CinematicFade>
@@ -397,10 +410,10 @@ export default function App() {
         </div>
       </section>
 
-      <section className="py-32 px-6 overflow-hidden relative group">
+      <section className="py-16 md:py-32 px-4 md:px-6 overflow-hidden relative group">
         <CinematicFade>
-          <div className="max-w-[1400px] mx-auto mb-12 flex items-end justify-between cursor-none" onClick={() => setIsGalleryOpen(true)} onMouseEnter={setPtr} onMouseLeave={setDef}>
-            <div><span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] mb-4 ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>Fotografia</span><h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase">Lens<span className="text-zinc-500">.</span></h2><span className="text-[9px] text-zinc-500 tracking-widest mt-2 block">[ CLIQUE PARA VER A GALERIA COMPLETA ]</span></div>
+          <div className="max-w-[1400px] mx-auto mb-8 md:mb-12 flex items-end justify-between" onClick={() => setIsGalleryOpen(true)} onMouseEnter={setPtr} onMouseLeave={setDef}>
+            <div><span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] mb-3 md:mb-4 ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>Fotografia</span><h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase">Lens<span className="text-zinc-500">.</span></h2><span className="text-[8px] md:text-[9px] text-zinc-500 tracking-widest mt-2 block">[ TOQUE PARA VER A GALERIA ]</span></div>
           </div>
         </CinematicFade>
         <div
@@ -414,7 +427,7 @@ export default function App() {
           {shuffledGallery.slice(0, 30).map((src, index) => (
             <div
               key={index}
-              className="relative w-[300px] md:w-[400px] aspect-[4/5] flex-shrink-0 rounded-2xl overflow-hidden"
+              className="relative w-[220px] md:w-[400px] aspect-[4/5] flex-shrink-0 rounded-xl md:rounded-2xl overflow-hidden"
               onClick={(e) => { if (!isDragging.current) setIsGalleryOpen(true); }}
             >
               <img src={src} loading="lazy" decoding="async" className="w-full h-full object-cover transition-all duration-700 hover:scale-110 pointer-events-none" alt={`Gallery ${index}`} />
@@ -423,35 +436,35 @@ export default function App() {
         </div>
       </section>
 
-      <section id="about" className={`py-40 px-6 backdrop-blur-3xl transition-colors duration-700 ${isDarkMode ? 'bg-zinc-950/20' : 'bg-zinc-100/50'}`}>
-        <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
+      <section id="about" className={`py-20 md:py-40 px-4 md:px-6 backdrop-blur-3xl transition-colors duration-700 ${isDarkMode ? 'bg-zinc-950/20' : 'bg-zinc-100/50'}`}>
+        <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-10 md:gap-20 items-center">
           <CinematicFade>
-            <div className={`relative aspect-square rounded-[60px] overflow-hidden border group transition-colors duration-700 cursor-none ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
+            <div className={`relative aspect-[4/5] md:aspect-square rounded-3xl md:rounded-[60px] overflow-hidden border group transition-colors duration-700 ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
               <img src="/gabson.jpg" loading="lazy" decoding="async" className="w-full h-full object-cover transition-all duration-1000" alt="Founder" />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
-              <div className="absolute bottom-8 right-8">
-                <motion.a href="https://instagram.com/gabsonnn" target="_blank" whileHover={{ scale: 1.1 }} className={`w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-xl border shadow-lg transition-all cursor-none ${isDarkMode ? 'bg-white/10 border-white/20 text-white hover:bg-white/20' : 'bg-black/10 border-black/20 text-black hover:bg-black/20'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d={ICON_PATHS.Instagram} /></svg>
+              <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8">
+                <motion.a href="https://instagram.com/gabsonnn" target="_blank" whileHover={{ scale: 1.1 }} className={`w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center backdrop-blur-xl border shadow-lg transition-all ${isDarkMode ? 'bg-white/10 border-white/20 text-white hover:bg-white/20' : 'bg-black/10 border-black/20 text-black hover:bg-black/20'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 md:w-6 md:h-6"><path d={ICON_PATHS.Instagram} /></svg>
                 </motion.a>
               </div>
             </div>
           </CinematicFade>
-          <div className="space-y-8">
+          <div className="space-y-6 md:space-y-8">
             <CinematicFade delay={0.2}>
-              <h3 className="text-6xl font-black tracking-tighter uppercase italic">Gabson Silva<span className="text-zinc-500">.</span></h3>
-              <p className="text-zinc-500 text-lg leading-relaxed font-light">Diretor e editor focado em narrativas visuais que fogem do comum. A KIGER é o reflexo de uma busca incessante pela estética perfeita e pelo impacto emocional.</p>
+              <h3 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic">Gabson Silva<span className="text-zinc-500">.</span></h3>
+              <p className="text-zinc-500 text-base md:text-lg leading-relaxed font-light mt-4">Diretor e editor focado em narrativas visuais que fogem do comum. A KIGER é o reflexo de uma busca incessante pela estética perfeita e pelo impacto emocional.</p>
             </CinematicFade>
           </div>
         </div>
       </section>
 
-      <section id="em-breve" className={`py-32 px-6 overflow-hidden relative group transition-colors duration-700 ${isDarkMode ? 'bg-zinc-900/20' : 'bg-black/5'}`}>
+      <section id="em-breve" className={`py-20 md:py-32 px-4 md:px-6 overflow-hidden relative group transition-colors duration-700 ${isDarkMode ? 'bg-zinc-900/20' : 'bg-black/5'}`}>
         <div className="max-w-[1200px] mx-auto text-center">
           <CinematicFade>
             <span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] mb-4 ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>
               Em Breve
             </span>
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-6">
+            <h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase mb-4 md:mb-6">
               Gabriella Stehling<span className="text-zinc-500">.</span>
             </h2>
             <p className="text-zinc-500 text-lg leading-relaxed font-light max-w-2xl mx-auto">
@@ -461,31 +474,31 @@ export default function App() {
         </div>
       </section>
 
-      <section id="contato" className={`relative py-32 px-6 overflow-hidden transition-all duration-700 ${isDarkMode ? 'bg-[#050505] shadow-[0_-10px_40px_-10px_rgba(255,255,255,0.05)]' : 'bg-[#ffffff] shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.1)]'}`}>
+      <section id="contato" className={`relative py-20 md:py-32 px-4 md:px-6 overflow-hidden transition-all duration-700 ${isDarkMode ? 'bg-[#050505] shadow-[0_-10px_40px_-10px_rgba(255,255,255,0.05)]' : 'bg-[#ffffff] shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.1)]'}`}>
         <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] blur-[150px] rounded-full pointer-events-none opacity-50 ${isDarkMode ? 'bg-white/5' : 'bg-black/5'}`}></div>
         <div className="max-w-[1200px] mx-auto relative z-10">
-          <div className="grid md:grid-cols-2 gap-24 mb-24">
-            <div className="space-y-12">
-              <div className="space-y-6"><span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>Contato</span><h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9]">VAMOS CRIAR<br /><span className="text-zinc-500">ALGO ÚNICO?</span></h2></div>
+          <div className="grid md:grid-cols-2 gap-12 md:gap-24 mb-16 md:mb-24">
+            <div className="space-y-8 md:space-y-12">
+              <div className="space-y-4 md:space-y-6"><span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>Contato</span><h2 className="text-3xl md:text-6xl font-black tracking-tighter leading-[0.9]">VAMOS CRIAR<br /><span className="text-zinc-500">ALGO ÚNICO?</span></h2></div>
               <p className="text-zinc-500 text-sm leading-relaxed max-w-md">Tem um projeto em mente? Preencha o formulário ao lado ou nos chame nas redes sociais. Estamos prontos para elevar o nível da sua produção.</p>
-              <div className="flex gap-8">
+              <div className="flex gap-5 md:gap-8 flex-wrap">
                 {SOCIAL_LINKS.map((social, i) => (<div key={i} onMouseEnter={setPtr} onMouseLeave={setDef}><SocialLink isDarkMode={isDarkMode} {...social} /></div>))}
               </div>
             </div>
-            <form className="space-y-8" onSubmit={sendToWhatsapp}>
-              <div className="grid grid-cols-2 gap-8"><div onMouseEnter={setPtr} onMouseLeave={setDef}><InputField name="name" placeholder="NOME" isDarkMode={isDarkMode} value={form.name} onChange={handleChange} /></div><div onMouseEnter={setPtr} onMouseLeave={setDef}><InputField name="email" placeholder="E-MAIL" type="email" isDarkMode={isDarkMode} value={form.email} onChange={handleChange} /></div></div>
+            <form className="space-y-5 md:space-y-8" onSubmit={sendToWhatsapp}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8"><div onMouseEnter={setPtr} onMouseLeave={setDef}><InputField name="name" placeholder="NOME" isDarkMode={isDarkMode} value={form.name} onChange={handleChange} /></div><div onMouseEnter={setPtr} onMouseLeave={setDef}><InputField name="email" placeholder="E-MAIL" type="email" isDarkMode={isDarkMode} value={form.email} onChange={handleChange} /></div></div>
               <div onMouseEnter={setPtr} onMouseLeave={setDef}><InputField name="subject" placeholder="ASSUNTO" isDarkMode={isDarkMode} value={form.subject} onChange={handleChange} /></div>
               <div onMouseEnter={setPtr} onMouseLeave={setDef}><InputField name="message" placeholder="SUA MENSAGEM" textarea isDarkMode={isDarkMode} value={form.message} onChange={handleChange} /></div>
               <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onMouseEnter={setPtr} onMouseLeave={setDef} className={`w-full py-4 uppercase font-bold tracking-[0.3em] text-[10px] border backdrop-blur-xl shadow-lg transition-all duration-300 cursor-none rounded-xl ${isDarkMode ? 'bg-white/10 border-white/20 text-white hover:bg-white/20' : 'bg-black/10 border-black/20 text-black hover:bg-black/20'}`}>Enviar Mensagem</motion.button>
             </form>
           </div>
-          <div className="text-center mb-20"><a href="mailto:contato@kiger.com" onMouseEnter={setPtr} onMouseLeave={setDef} className="group relative inline-block text-3xl md:text-6xl font-black tracking-tighter transition-colors hover:text-zinc-500 cursor-none break-all">CONTATO<span className="text-zinc-500 group-hover:text-zinc-400 transition-colors">@</span>KIGER.COM<span className={`absolute bottom-0 left-0 w-full h-[2px] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out ${isDarkMode ? 'bg-white' : 'bg-black'}`}></span></a></div>
+          <div className="text-center mb-12 md:mb-20"><a href="mailto:contato@kiger.com" onMouseEnter={setPtr} onMouseLeave={setDef} className="group relative inline-block text-xl md:text-6xl font-black tracking-tighter transition-colors hover:text-zinc-500 break-all">CONTATO<span className="text-zinc-500 group-hover:text-zinc-400 transition-colors">@</span>KIGER.COM<span className={`absolute bottom-0 left-0 w-full h-[2px] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out ${isDarkMode ? 'bg-white' : 'bg-black'}`}></span></a></div>
           <div className="flex flex-col md:flex-row justify-between items-end"><div className="flex flex-col gap-2"><span className={isDarkMode ? 'text-white' : 'text-zinc-900'}>São Paulo, BR</span><span className="text-zinc-500 text-[10px] tracking-widest">DISPONÍVEL GLOBALMENTE</span></div><div className="text-right mt-12 md:mt-0"><span className="text-zinc-500 font-bold block">© 2026 KIGER</span><span className="text-zinc-600 text-[8px] uppercase tracking-widest">Todos os direitos reservados</span></div></div>
         </div>
       </section>
 
-      <AnimatePresence>{selectedVideo && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4 md:p-12 cursor-auto modal-open" onClick={() => setSelectedVideo(null)}><motion.div initial={{ scale: 0.9, filter: 'blur(20px)' }} animate={{ scale: 1, filter: 'blur(0px)' }} className="w-full max-w-6xl aspect-video rounded-[40px] overflow-hidden shadow-2xl bg-black" onClick={e => e.stopPropagation()}><iframe src={`${selectedVideo.url}?autoplay=1&rel=0&showinfo=0`} className="w-full h-full" allowFullScreen loading="lazy" /></motion.div><button className="absolute top-8 right-8 text-[10px] font-black tracking-widest uppercase text-white hover:text-red-500 transition-colors" onClick={() => setSelectedVideo(null)}>[ Fechar ]</button></motion.div>)}</AnimatePresence>
-      <AnimatePresence>{isGalleryOpen && (<motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className={`fixed inset-0 z-[200] overflow-y-auto no-scrollbar ${isDarkMode ? 'bg-black' : 'bg-white'}`}><div className="min-h-screen p-6 md:p-12"><div className="flex justify-between items-center mb-12 sticky top-0 z-50 py-4 backdrop-blur-md"><h2 className={`text-2xl font-black tracking-tighter uppercase ${isDarkMode ? 'text-white' : 'text-black'}`}>LENS<span className="text-zinc-500">.</span></h2><button onClick={() => setIsGalleryOpen(false)} className={`text-[10px] font-bold tracking-widest uppercase border px-6 py-2 rounded-full transition-all backdrop-blur-xl ${isDarkMode ? 'border-white text-white hover:bg-white hover:text-black' : 'border-black text-black hover:bg-black hover:text-white'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>Fechar Galeria</button></div><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{shuffledGallery.map((src, index) => (<motion.div key={index} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: index % 3 * 0.1 }} className="relative group aspect-[4/5] rounded-xl overflow-hidden cursor-none" onMouseEnter={setPtr} onMouseLeave={setDef}><img src={src} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={`Gallery ${index}`} loading="lazy" decoding="async" /><div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-500 pointer-events-none"></div></motion.div>))}</div><div className="mt-20 text-center"><p className="text-zinc-500 text-[10px] tracking-widest uppercase">Fim da Galeria</p></div></div></motion.div>)}</AnimatePresence>
+      <AnimatePresence>{selectedVideo && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-3 md:p-12 cursor-auto modal-open" onClick={() => setSelectedVideo(null)}><motion.div initial={{ scale: 0.9, filter: 'blur(20px)' }} animate={{ scale: 1, filter: 'blur(0px)' }} className="w-full max-w-6xl aspect-video rounded-2xl md:rounded-[40px] overflow-hidden shadow-2xl bg-black" onClick={e => e.stopPropagation()}><iframe src={`${selectedVideo.url}?autoplay=1&rel=0&showinfo=0`} className="w-full h-full" allow="autoplay; fullscreen" allowFullScreen loading="lazy" /></motion.div><button className="absolute top-4 right-4 md:top-8 md:right-8 text-[10px] font-black tracking-widest uppercase text-white hover:text-red-500 transition-colors bg-black/50 px-4 py-2 rounded-full backdrop-blur-md" onClick={() => setSelectedVideo(null)}>[ Fechar ]</button></motion.div>)}</AnimatePresence>
+      <AnimatePresence>{isGalleryOpen && (<motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className={`fixed inset-0 z-[200] overflow-y-auto no-scrollbar ${isDarkMode ? 'bg-black' : 'bg-white'}`}><div className="min-h-screen p-3 md:p-12"><div className="flex justify-between items-center mb-6 md:mb-12 sticky top-0 z-50 py-3 md:py-4 backdrop-blur-md"><h2 className={`text-xl md:text-2xl font-black tracking-tighter uppercase ${isDarkMode ? 'text-white' : 'text-black'}`}>LENS<span className="text-zinc-500">.</span></h2><button onClick={() => setIsGalleryOpen(false)} className={`text-[9px] md:text-[10px] font-bold tracking-widest uppercase border px-4 md:px-6 py-2 rounded-full transition-all backdrop-blur-xl ${isDarkMode ? 'border-white text-white hover:bg-white hover:text-black' : 'border-black text-black hover:bg-black hover:text-white'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>Fechar</button></div><div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">{shuffledGallery.map((src, index) => (<motion.div key={index} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: index % 3 * 0.05 }} className="relative group aspect-[4/5] rounded-lg md:rounded-xl overflow-hidden" onMouseEnter={setPtr} onMouseLeave={setDef}><img src={src} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={`Gallery ${index}`} loading="lazy" decoding="async" /><div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-500 pointer-events-none"></div></motion.div>))}</div><div className="mt-12 md:mt-20 text-center pb-8"><p className="text-zinc-500 text-[10px] tracking-widest uppercase">Fim da Galeria</p></div></div></motion.div>)}</AnimatePresence>
     </div>
   );
 }
