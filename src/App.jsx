@@ -270,32 +270,63 @@ export default function App() {
   const setPtr = useCallback(() => setCursorVariant("pointer"), []);
   const setDef = useCallback(() => setCursorVariant("default"), []);
 
-  // Drag-to-scroll gallery
+  // Gallery auto-scroll + drag
   const galleryRef = useRef(null);
   const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
-  const handleGalleryMouseDown = useCallback((e) => {
-    isDragging.current = true;
-    startX.current = e.pageX - galleryRef.current.offsetLeft;
-    scrollLeft.current = galleryRef.current.scrollLeft;
-    galleryRef.current.style.cursor = 'grabbing';
+  const dragStartX = useRef(0);
+  const dragScrollLeft = useRef(0);
+  const autoScrollRef = useRef(null);
+
+  useEffect(() => {
+    const el = galleryRef.current;
+    if (!el) return;
+    let animId;
+    const speed = 0.5; // px per frame
+    const tick = () => {
+      if (!isDragging.current && el) {
+        el.scrollLeft += speed;
+        // Loop: when scrolled past half, reset to start
+        if (el.scrollLeft >= el.scrollWidth / 2) {
+          el.scrollLeft = 0;
+        }
+      }
+      animId = requestAnimationFrame(tick);
+    };
+    animId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animId);
   }, []);
-  const handleGalleryMouseMove = useCallback((e) => {
+
+  const onGalleryMouseDown = useCallback((e) => {
+    isDragging.current = true;
+    dragStartX.current = e.pageX;
+    dragScrollLeft.current = galleryRef.current.scrollLeft;
+  }, []);
+  const onGalleryMouseMove = useCallback((e) => {
     if (!isDragging.current) return;
     e.preventDefault();
-    const x = e.pageX - galleryRef.current.offsetLeft;
-    const walk = (x - startX.current) * 2;
-    galleryRef.current.scrollLeft = scrollLeft.current - walk;
+    const walk = (e.pageX - dragStartX.current) * 1.5;
+    galleryRef.current.scrollLeft = dragScrollLeft.current - walk;
   }, []);
-  const handleGalleryMouseUp = useCallback(() => {
+  const onGalleryMouseUp = useCallback(() => {
     isDragging.current = false;
-    if (galleryRef.current) galleryRef.current.style.cursor = 'grab';
+  }, []);
+  const onGalleryTouchStart = useCallback((e) => {
+    isDragging.current = true;
+    dragStartX.current = e.touches[0].pageX;
+    dragScrollLeft.current = galleryRef.current.scrollLeft;
+  }, []);
+  const onGalleryTouchMove = useCallback((e) => {
+    if (!isDragging.current) return;
+    const walk = (e.touches[0].pageX - dragStartX.current) * 1.5;
+    galleryRef.current.scrollLeft = dragScrollLeft.current - walk;
+  }, []);
+  const onGalleryTouchEnd = useCallback(() => {
+    isDragging.current = false;
   }, []);
 
   return (
     <div className={`min-h-screen font-['Outfit',_sans-serif] selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700 ${isDarkMode ? 'bg-[#050505] text-white' : 'bg-white text-zinc-900'}`}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); @media(min-width:768px){ body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } } .modal-open, .modal-open * { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } .drag-scroll { cursor: grab; overflow-x: auto; -webkit-overflow-scrolling: touch; } .drag-scroll::-webkit-scrollbar { display: none; } .drag-scroll { scrollbar-width: none; } html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; } body { overscroll-behavior-y: contain; } @keyframes gallery-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } .gallery-auto-scroll { animation: gallery-scroll 120s linear infinite; } .gallery-auto-scroll:hover, .gallery-auto-scroll.is-dragging { animation-play-state: paused; }`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); @media(min-width:768px){ body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } } .modal-open, .modal-open * { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; } body { overscroll-behavior-y: contain; }`}</style>
 
       {!selectedVideo && (
         <motion.div className="fixed top-0 left-0 rounded-full pointer-events-none z-[9999] hidden md:flex items-center justify-center mix-blend-difference bg-white" style={{ x: mouseX, y: mouseY, translateX: "-50%", translateY: "-50%" }} animate={{ height: cursorVariant === "pointer" ? 80 : 20, width: cursorVariant === "pointer" ? 80 : 20, boxShadow: cursorVariant === "pointer" ? "0 0 60px 15px rgba(255, 255, 255, 0.8)" : "0 0 20px 5px rgba(255, 255, 255, 0.4)" }} transition={{ type: "tween", ease: "backOut", duration: 0.2 }}>
@@ -423,40 +454,27 @@ export default function App() {
             <div><span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] mb-3 md:mb-4 ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>Fotografia</span><h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase">Lens<span className="text-zinc-500">.</span></h2><span className="text-[8px] md:text-[9px] text-zinc-500 tracking-widest mt-2 block">[ TOQUE PARA VER A GALERIA ]</span></div>
           </div>
         </CinematicFade>
-        <div className="overflow-hidden w-full">
-          <div
-            ref={galleryRef}
-            className={`flex gap-4 py-4 gallery-auto-scroll ${isDragging.current ? 'is-dragging' : ''}`}
-            style={{ width: 'max-content' }}
-            onMouseDown={(e) => {
-              isDragging.current = true;
-              startX.current = e.pageX;
-              scrollLeft.current = galleryRef.current?.getBoundingClientRect().left || 0;
-              galleryRef.current?.classList.add('is-dragging');
-            }}
-            onMouseMove={(e) => {
-              if (!isDragging.current) return;
-              e.preventDefault();
-            }}
-            onMouseUp={() => {
-              isDragging.current = false;
-              galleryRef.current?.classList.remove('is-dragging');
-            }}
-            onMouseLeave={() => {
-              isDragging.current = false;
-              galleryRef.current?.classList.remove('is-dragging');
-            }}
-          >
-            {[...shuffledGallery.slice(0, 20), ...shuffledGallery.slice(0, 20)].map((src, index) => (
-              <div
-                key={index}
-                className="relative w-[220px] md:w-[400px] aspect-[4/5] flex-shrink-0 rounded-xl md:rounded-2xl overflow-hidden"
-                onClick={(e) => { if (!isDragging.current) setIsGalleryOpen(true); }}
-              >
-                <img src={src} loading="lazy" decoding="async" className="w-full h-full object-cover transition-all duration-700 hover:scale-110 pointer-events-none" alt={`Gallery ${index}`} />
-              </div>
-            ))}
-          </div>
+        <div
+          ref={galleryRef}
+          className="flex gap-4 py-4 overflow-x-hidden no-scrollbar w-full"
+          style={{ cursor: 'grab', WebkitOverflowScrolling: 'touch' }}
+          onMouseDown={onGalleryMouseDown}
+          onMouseMove={onGalleryMouseMove}
+          onMouseUp={onGalleryMouseUp}
+          onMouseLeave={onGalleryMouseUp}
+          onTouchStart={onGalleryTouchStart}
+          onTouchMove={onGalleryTouchMove}
+          onTouchEnd={onGalleryTouchEnd}
+        >
+          {[...shuffledGallery.slice(0, 20), ...shuffledGallery.slice(0, 20)].map((src, index) => (
+            <div
+              key={index}
+              className="relative w-[220px] md:w-[400px] aspect-[4/5] flex-shrink-0 rounded-xl md:rounded-2xl overflow-hidden"
+              onClick={() => { if (!isDragging.current) setIsGalleryOpen(true); }}
+            >
+              <img src={src} loading="lazy" decoding="async" className="w-full h-full object-cover transition-all duration-700 hover:scale-110 pointer-events-none select-none" alt={`Gallery ${index}`} draggable={false} />
+            </div>
+          ))}
         </div>
       </section>
 
