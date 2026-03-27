@@ -184,6 +184,12 @@ export default function App() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageZoom, setImageZoom] = useState(1);
+  const [imagePan, setImagePan] = useState({ x: 0, y: 0 });
+  const imagePanning = useRef(false);
+  const imagePanStart = useRef({ x: 0, y: 0 });
+  const imagePanOffset = useRef({ x: 0, y: 0 });
 
   // DATABASE VIDEOS
   const portfolioItems = useMemo(() => [
@@ -498,7 +504,60 @@ export default function App() {
       </section>
 
       <AnimatePresence>{selectedVideo && (<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-3 md:p-12 cursor-auto modal-open" onClick={() => setSelectedVideo(null)}><motion.div initial={{ scale: 0.9, filter: 'blur(20px)' }} animate={{ scale: 1, filter: 'blur(0px)' }} className="w-full max-w-6xl aspect-video rounded-2xl md:rounded-[40px] overflow-hidden shadow-2xl bg-black" onClick={e => e.stopPropagation()}><iframe src={`${selectedVideo.url}?autoplay=1&rel=0&showinfo=0`} className="w-full h-full" allow="autoplay; fullscreen" allowFullScreen loading="lazy" /></motion.div><button className="absolute top-4 right-4 md:top-8 md:right-8 text-[10px] font-black tracking-widest uppercase text-white hover:text-red-500 transition-colors bg-black/50 px-4 py-2 rounded-full backdrop-blur-md" onClick={() => setSelectedVideo(null)}>[ Fechar ]</button></motion.div>)}</AnimatePresence>
-      <AnimatePresence>{isGalleryOpen && (<motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className={`fixed inset-0 z-[200] overflow-y-auto no-scrollbar ${isDarkMode ? 'bg-black' : 'bg-white'}`}><div className="min-h-screen p-3 md:p-12"><div className="flex justify-between items-center mb-6 md:mb-12 sticky top-0 z-50 py-3 md:py-4 backdrop-blur-md"><h2 className={`text-xl md:text-2xl font-black tracking-tighter uppercase ${isDarkMode ? 'text-white' : 'text-black'}`}>LENS<span className="text-zinc-500">.</span></h2><button onClick={() => setIsGalleryOpen(false)} className={`text-[9px] md:text-[10px] font-bold tracking-widest uppercase border px-4 md:px-6 py-2 rounded-full transition-all backdrop-blur-xl ${isDarkMode ? 'border-white text-white hover:bg-white hover:text-black' : 'border-black text-black hover:bg-black hover:text-white'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>Fechar</button></div><div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">{shuffledGallery.map((src, index) => (<motion.div key={index} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: index % 3 * 0.05 }} className="relative group aspect-[4/5] rounded-lg md:rounded-xl overflow-hidden" onMouseEnter={setPtr} onMouseLeave={setDef}><img src={src} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={`Gallery ${index}`} loading="lazy" decoding="async" /><div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-500 pointer-events-none"></div></motion.div>))}</div><div className="mt-12 md:mt-20 text-center pb-8"><p className="text-zinc-500 text-[10px] tracking-widest uppercase">Fim da Galeria</p></div></div></motion.div>)}</AnimatePresence>
+      <AnimatePresence>{isGalleryOpen && (<motion.div initial={{ opacity: 0, y: 100 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 100 }} transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }} className={`fixed inset-0 z-[200] overflow-y-auto no-scrollbar ${isDarkMode ? 'bg-black' : 'bg-white'}`}><div className="min-h-screen p-3 md:p-12"><div className="flex justify-between items-center mb-6 md:mb-12 sticky top-0 z-50 py-3 md:py-4 backdrop-blur-md"><h2 className={`text-xl md:text-2xl font-black tracking-tighter uppercase ${isDarkMode ? 'text-white' : 'text-black'}`}>LENS<span className="text-zinc-500">.</span></h2><button onClick={() => setIsGalleryOpen(false)} className={`text-[9px] md:text-[10px] font-bold tracking-widest uppercase border px-4 md:px-6 py-2 rounded-full transition-all backdrop-blur-xl ${isDarkMode ? 'border-white text-white hover:bg-white hover:text-black' : 'border-black text-black hover:bg-black hover:text-white'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>Fechar</button></div><div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">{shuffledGallery.map((src, index) => (<motion.div key={index} initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: index % 3 * 0.05 }} className="relative group aspect-[4/5] rounded-lg md:rounded-xl overflow-hidden" onMouseEnter={setPtr} onMouseLeave={setDef} onClick={() => { setSelectedImage(src); setImageZoom(1); setImagePan({ x: 0, y: 0 }); }}><img src={src} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={`Gallery ${index}`} loading="lazy" decoding="async" /><div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-500 pointer-events-none"></div></motion.div>))}</div><div className="mt-12 md:mt-20 text-center pb-8"><p className="text-zinc-500 text-[10px] tracking-widest uppercase">Fim da Galeria</p></div></div></motion.div>)}</AnimatePresence>
+
+      {/* Fullscreen Image Viewer with Zoom */}
+      <AnimatePresence>{selectedImage && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[300] bg-black/95 flex items-center justify-center cursor-auto"
+          onClick={() => { setSelectedImage(null); setImageZoom(1); setImagePan({ x: 0, y: 0 }); }}
+          onWheel={(e) => {
+            e.stopPropagation();
+            setImageZoom(prev => {
+              const next = prev + (e.deltaY < 0 ? 0.3 : -0.3);
+              const clamped = Math.min(Math.max(next, 1), 5);
+              if (clamped === 1) setImagePan({ x: 0, y: 0 });
+              return clamped;
+            });
+          }}
+        >
+          <motion.img
+            src={selectedImage}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="max-w-[95vw] max-h-[90vh] object-contain select-none"
+            style={{ transform: `scale(${imageZoom}) translate(${imagePan.x / imageZoom}px, ${imagePan.y / imageZoom}px)` }}
+            onClick={(e) => e.stopPropagation()}
+            draggable={false}
+            onMouseDown={(e) => {
+              if (imageZoom > 1) {
+                e.stopPropagation();
+                imagePanning.current = true;
+                imagePanStart.current = { x: e.clientX - imagePan.x, y: e.clientY - imagePan.y };
+              }
+            }}
+            onMouseMove={(e) => {
+              if (imagePanning.current && imageZoom > 1) {
+                e.stopPropagation();
+                setImagePan({ x: e.clientX - imagePanStart.current.x, y: e.clientY - imagePanStart.current.y });
+              }
+            }}
+            onMouseUp={() => { imagePanning.current = false; }}
+            onMouseLeave={() => { imagePanning.current = false; }}
+          />
+          <button
+            className="absolute top-4 right-4 md:top-8 md:right-8 text-[10px] font-black tracking-widest uppercase text-white hover:text-red-500 transition-colors bg-black/60 px-4 py-2 rounded-full backdrop-blur-md z-10"
+            onClick={() => { setSelectedImage(null); setImageZoom(1); setImagePan({ x: 0, y: 0 }); }}
+          >[ Fechar ]</button>
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full">
+            <span className="text-white/60 text-[10px] tracking-widest uppercase">{Math.round(imageZoom * 100)}%</span>
+            <button className="text-white/80 hover:text-white text-xs font-bold px-2" onClick={(e) => { e.stopPropagation(); setImageZoom(1); setImagePan({ x: 0, y: 0 }); }}>Reset</button>
+          </div>
+        </motion.div>
+      )}</AnimatePresence>
     </div>
   );
 }
