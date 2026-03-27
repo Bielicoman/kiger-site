@@ -149,7 +149,7 @@ const CinematicFade = memo(({ children, delay = 0 }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
+      viewport={{ once: true, margin: "-10% 0px -10% 0px" }}
       transition={{ duration: 0.8, delay, ease: "easeOut" }}
     >
       {children}
@@ -551,17 +551,17 @@ export default function App() {
             });
           }}
         >
-          <motion.img
-            src={selectedImage}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="max-w-[95vw] max-h-[90vh] object-contain select-none"
-            style={{ transform: `scale(${imageZoom}) translate(${imagePan.x / imageZoom}px, ${imagePan.y / imageZoom}px)` }}
+          <div
+            style={{
+              transform: `scale(${imageZoom}) translate(${imagePan.x / imageZoom}px, ${imagePan.y / imageZoom}px)`,
+              transition: imagePanning.current ? 'none' : 'transform 0.2s ease-out',
+              cursor: imageZoom > 1 ? 'grab' : 'default'
+            }}
             onClick={(e) => e.stopPropagation()}
-            draggable={false}
             onMouseDown={(e) => {
               if (imageZoom > 1) {
                 e.stopPropagation();
+                e.preventDefault();
                 imagePanning.current = true;
                 imagePanStart.current = { x: e.clientX - imagePan.x, y: e.clientY - imagePan.y };
               }
@@ -574,14 +574,35 @@ export default function App() {
             }}
             onMouseUp={() => { imagePanning.current = false; }}
             onMouseLeave={() => { imagePanning.current = false; }}
-          />
+            onTouchStart={(e) => {
+              if (imageZoom > 1 && e.touches.length === 1) {
+                imagePanning.current = true;
+                imagePanStart.current = { x: e.touches[0].clientX - imagePan.x, y: e.touches[0].clientY - imagePan.y };
+              }
+            }}
+            onTouchMove={(e) => {
+              if (imagePanning.current && imageZoom > 1 && e.touches.length === 1) {
+                setImagePan({ x: e.touches[0].clientX - imagePanStart.current.x, y: e.touches[0].clientY - imagePanStart.current.y });
+              }
+            }}
+            onTouchEnd={() => { imagePanning.current = false; }}
+          >
+            <img
+              src={selectedImage}
+              className="max-w-[95vw] max-h-[90vh] object-contain select-none"
+              alt="Fullscreen view"
+              draggable={false}
+            />
+          </div>
           <button
             className="absolute top-4 right-4 md:top-8 md:right-8 text-[10px] font-black tracking-widest uppercase text-white hover:text-red-500 transition-colors bg-black/60 px-4 py-2 rounded-full backdrop-blur-md z-10"
             onClick={() => { setSelectedImage(null); setImageZoom(1); setImagePan({ x: 0, y: 0 }); }}
           >[ Fechar ]</button>
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/60 backdrop-blur-md px-4 py-2 rounded-full">
-            <span className="text-white/60 text-[10px] tracking-widest uppercase">{Math.round(imageZoom * 100)}%</span>
-            <button className="text-white/80 hover:text-white text-xs font-bold px-2" onClick={(e) => { e.stopPropagation(); setImageZoom(1); setImagePan({ x: 0, y: 0 }); }}>Reset</button>
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-full z-10">
+            <button className="text-white/80 hover:text-white text-sm font-bold" onClick={(e) => { e.stopPropagation(); setImageZoom(prev => Math.min(prev + 0.5, 5)); }}>+</button>
+            <span className="text-white/60 text-[10px] tracking-widest uppercase min-w-[40px] text-center">{Math.round(imageZoom * 100)}%</span>
+            <button className="text-white/80 hover:text-white text-sm font-bold" onClick={(e) => { e.stopPropagation(); setImageZoom(prev => { const n = Math.max(prev - 0.5, 1); if (n === 1) setImagePan({x:0,y:0}); return n; }); }}>−</button>
+            <button className="text-white/60 hover:text-white text-[9px] font-bold tracking-widest uppercase ml-2" onClick={(e) => { e.stopPropagation(); setImageZoom(1); setImagePan({ x: 0, y: 0 }); }}>Reset</button>
           </div>
         </motion.div>
       )}</AnimatePresence>
