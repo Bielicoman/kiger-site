@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, memo, useCallback } from 'react';
+import { useState, useEffect, useMemo, memo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue } from 'framer-motion';
 
 // --- CONFIGURAÇÃO E DADOS ---
@@ -11,7 +11,8 @@ const ICON_PATHS = {
   Moon: "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z",
   Instagram: "M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z",
   WhatsApp: "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z",
-  LinkedIn: "M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+  LinkedIn: "M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z",
+  YouTube: "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
 };
 
 const CLIENTS = [
@@ -28,117 +29,118 @@ const CATEGORIES = [
 const SOCIAL_LINKS = [
   { href: `https://wa.me/${CONTACT_NUMBER}`, label: "WhatsApp", color: "#25D366", path: ICON_PATHS.WhatsApp },
   { href: "https://instagram.com/kiger.br", label: "Instagram", color: "#d62976", path: ICON_PATHS.Instagram },
+  { href: "https://www.youtube.com/@kigerbr", label: "YouTube", color: "#FF0000", path: ICON_PATHS.YouTube },
   { href: "https://www.linkedin.com/in/gabson-sp-405422328/", label: "LinkedIn", color: "#0077b5", path: ICON_PATHS.LinkedIn }
 ];
 
 const GALLERY_PHOTOS = [
-  "https://live.staticflickr.com/65535/54916796397_d1879f5324_w.jpg", "https://live.staticflickr.com/65535/54917876418_063860b510_w.jpg",
-  "https://live.staticflickr.com/65535/54917876468_8b06e10cec_w.jpg", "https://live.staticflickr.com/65535/54917959940_f6259cf05f_w.jpg",
-  "https://live.staticflickr.com/65535/54917959730_733870d024_w.jpg", "https://live.staticflickr.com/65535/54917655736_ae98dc21ec_w.jpg",
-  "https://live.staticflickr.com/65535/54917655671_49ce7d2ba3_w.jpg", "https://live.staticflickr.com/65535/54917909094_600ceb356f_w.jpg",
-  "https://live.staticflickr.com/65535/54916794892_140e9281bf_w.jpg", "https://live.staticflickr.com/65535/54917959050_87b0d3ca57_w.jpg",
-  "https://live.staticflickr.com/65535/54917958855_67a55349b2_w.jpg", "https://live.staticflickr.com/65535/54916794542_536680eac2_w.jpg",
-  "https://live.staticflickr.com/65535/54917874913_5d2a848f79_w.jpg", "https://live.staticflickr.com/65535/54916794672_d8d72ecf09_w.jpg",
-  "https://live.staticflickr.com/65535/54917907654_94a61c06d0_w.jpg", "https://live.staticflickr.com/65535/54917957975_b517de8624_w.jpg",
-  "https://live.staticflickr.com/65535/54916793987_9a65cf1623.jpg", "https://live.staticflickr.com/65535/54917873843_2eb9ac0d3b_n.jpg",
-  "https://live.staticflickr.com/65535/54916793517_ed2da260a5_n.jpg", "https://live.staticflickr.com/65535/54917873763_e38dc9039a_w.jpg",
-  "https://live.staticflickr.com/65535/54917873478_a3abd29507_c.jpg", "https://live.staticflickr.com/65535/54917957295_ca448bb721.jpg",
-  "https://live.staticflickr.com/65535/54917906454_e1aaa1f0ac_w.jpg", "https://live.staticflickr.com/65535/54916793062_da4fdbdb75.jpg",
-  "https://live.staticflickr.com/65535/54917872243_5c9c2f33d0_w.jpg", "https://live.staticflickr.com/65535/54917905499_b741ee4491_n.jpg",
-  "https://live.staticflickr.com/65535/54917872803_6d35b7c334_n.jpg", "https://live.staticflickr.com/65535/54917956130_ecedb284e1_w.jpg",
-  "https://live.staticflickr.com/65535/54916791402_c6acc61004_n.jpg", "https://live.staticflickr.com/65535/54916791522_6bbc38a487_n.jpg",
-  "https://live.staticflickr.com/65535/54916791342_c26791b2a5_w.jpg", "https://live.staticflickr.com/65535/54917904849_aa10cd4509.jpg",
-  "https://live.staticflickr.com/65535/54916790572_0c2f5a2a28_w.jpg", "https://live.staticflickr.com/65535/54917904329_f69275b18b_w.jpg",
-  "https://live.staticflickr.com/65535/54917954270_2f657c32fc_w.jpg", "https://live.staticflickr.com/65535/54917650546_59dfb6fedd_w.jpg",
-  "https://live.staticflickr.com/65535/54917650031_491ee8dba7_w.jpg", "https://live.staticflickr.com/65535/54917869983_6f270f6162_w.jpg",
-  "https://live.staticflickr.com/65535/54917869968_0359ee62f1_w.jpg", "https://live.staticflickr.com/65535/54917953760_cd6ed31af3_w.jpg",
-  "https://live.staticflickr.com/65535/54916788632_9c18ceda23_w.jpg", "https://live.staticflickr.com/65535/54917902359_9050d3ba4d_w.jpg",
-  "https://live.staticflickr.com/65535/54917869073_8102bbe147_n.jpg", "https://live.staticflickr.com/65535/54916788567_17ab39814e_n.jpg",
-  "https://live.staticflickr.com/65535/54916787887_c76f5df0fc_w.jpg", "https://live.staticflickr.com/65535/54917901644_1060fa6cc5_w.jpg",
-  "https://live.staticflickr.com/65535/54917868453_2af60eab32_w.jpg", "https://live.staticflickr.com/65535/54917901509_58be2f5ccc_w.jpg",
-  "https://live.staticflickr.com/65535/54916787502_dde01c8051_w.jpg", "https://live.staticflickr.com/65535/54917951905_4170ce6c2f_w.jpg",
-  "https://live.staticflickr.com/65535/54917901199_37939e5035_w.jpg", "https://live.staticflickr.com/65535/54917901219_52b12b1d80_w.jpg",
-  "https://live.staticflickr.com/65535/54917867853_ebf7c1d829_w.jpg", "https://live.staticflickr.com/65535/54917951530_142c86ce8a_w.jpg",
-  "https://live.staticflickr.com/65535/54916787232_b5fe207468_w.jpg", "https://live.staticflickr.com/65535/54917900634_c7fce2981c_w.jpg",
-  "https://live.staticflickr.com/65535/54917951230_d93fb06321_w.jpg", "https://live.staticflickr.com/65535/54916786892_27577e352f_w.jpg",
-  "https://live.staticflickr.com/65535/54917950755_9a2fe7c19c_w.jpg", "https://live.staticflickr.com/65535/54916786932_0b00d90034_w.jpg",
-  "https://live.staticflickr.com/65535/54917950705_06e4a4b3ea_w.jpg", "https://live.staticflickr.com/65535/54917900069_5236f59ece.jpg",
-  "https://live.staticflickr.com/65535/54917646761_3a429c270d_w.jpg", "https://live.staticflickr.com/65535/54916786377_179b576cb3_w.jpg",
-  "https://live.staticflickr.com/65535/54917646531_636652aa23_w.jpg", "https://live.staticflickr.com/65535/54917646411_d12d1eb6fd_w.jpg",
-  "https://live.staticflickr.com/65535/54917899469_2e67dfeecb_w.jpg", "https://live.staticflickr.com/65535/54916785867_307a47be21_w.jpg",
-  "https://live.staticflickr.com/65535/54916785827_3956393b42_w.jpg", "https://live.staticflickr.com/65535/54917898864_9c2647f2b0_w.jpg",
-  "https://live.staticflickr.com/65535/54916784917_b5a63bc634_w.jpg", "https://live.staticflickr.com/65535/54917948955_14c6151ca8_w.jpg",
-  "https://live.staticflickr.com/65535/54917645296_2433de7a22_w.jpg", "https://live.staticflickr.com/65535/54917898329_f8ecd5d8e7_w.jpg",
-  "https://live.staticflickr.com/65535/54917644931_7f1617e348.jpg", "https://live.staticflickr.com/65535/54917897954_9ebf4bc7d3_w.jpg",
-  "https://live.staticflickr.com/65535/54916784572_93a40bf2a3_w.jpg", "https://live.staticflickr.com/65535/54917898089_f1e94c1e3a_w.jpg",
-  "https://live.staticflickr.com/65535/54917947940_a19eebbd6f_w.jpg", "https://live.staticflickr.com/65535/54917864448_a45f0debf0_w.jpg",
-  "https://live.staticflickr.com/65535/54916783942_ccb160e292_w.jpg", "https://live.staticflickr.com/65535/54917897379_34f5672571_w.jpg",
-  "https://live.staticflickr.com/65535/54917863988_0cb2100275_w.jpg", "https://live.staticflickr.com/65535/54917643676_57568e4571_w.jpg",
-  "https://live.staticflickr.com/65535/54917863468_3c0b8d3aac_w.jpg", "https://live.staticflickr.com/65535/54916783162_766528372c_w.jpg",
-  "https://live.staticflickr.com/65535/54917643206_389117145a_w.jpg", "https://live.staticflickr.com/65535/54917946440_e41f74da35_w.jpg",
-  "https://live.staticflickr.com/65535/54917643011_ede018afe0_w.jpg", "https://live.staticflickr.com/65535/54917946190_5cb8507c9e_w.jpg",
-  "https://live.staticflickr.com/65535/54917895579_0a9bb46609_w.jpg", "https://live.staticflickr.com/65535/54916782052_5452524c55_w.jpg",
-  "https://live.staticflickr.com/65535/54916782277_677a69f353_w.jpg", "https://live.staticflickr.com/65535/54917945765_171dc0b5d9_w.jpg",
-  "https://live.staticflickr.com/65535/54916781292_86abf750b4.jpg", "https://live.staticflickr.com/65535/54916781387_0ea42f1e64_w.jpg",
-  "https://live.staticflickr.com/65535/54917641111_1c9edaceab_w.jpg", "https://live.staticflickr.com/65535/54917944665_5ba65caa68_w.jpg",
-  "https://live.staticflickr.com/65535/54916781252_f688320e18_w.jpg", "https://live.staticflickr.com/65535/54916781147_d209ec1f67_w.jpg",
-  "https://live.staticflickr.com/65535/54916175449_ffbc8cd5df_w.jpg", "https://live.staticflickr.com/65535/54915065847_5f30852dc5_w.jpg",
-  "https://live.staticflickr.com/65535/54915923706_9aebb9a535_w.jpg", "https://live.staticflickr.com/65535/54916136528_dac8f4acf7_w.jpg",
-  "https://live.staticflickr.com/65535/54915923666_913ea7a9bd_w.jpg", "https://live.staticflickr.com/65535/54916222555_e5bb31478e_w.jpg",
-  "https://live.staticflickr.com/65535/54916141373_5425db457b_w.jpg", "https://live.staticflickr.com/65535/54916136473_170daf7a8b_w.jpg",
-  "https://live.staticflickr.com/65535/54915060687_4af50e422a_n.jpg", "https://live.staticflickr.com/65535/54916170264_eb8101bc67_n.jpg",
-  "https://live.staticflickr.com/65535/54916175399_1d210ac18f_w.jpg", "https://live.staticflickr.com/65535/54916170184_c55b09ec5a_w.jpg",
-  "https://live.staticflickr.com/65535/54916141408_8bfb0685cb_w.jpg", "https://live.staticflickr.com/65535/54916141403_c433401d27_w.jpg",
-  "https://live.staticflickr.com/65535/54916136433_ea5c0b1cce_w.jpg", "https://live.staticflickr.com/65535/54916138313_81918ac9e6_w.jpg",
-  "https://live.staticflickr.com/65535/54915062617_841da53c80_w.jpg", "https://live.staticflickr.com/65535/54916138273_f9def8d7b6_w.jpg",
-  "https://live.staticflickr.com/65535/54916172164_4564db4482_w.jpg", "https://live.staticflickr.com/65535/54916138138_5abe30cb9b_w.jpg",
-  "https://live.staticflickr.com/65535/54916172129_78f271ea54_w.jpg", "https://live.staticflickr.com/65535/54915062507_b43aacbb44_w.jpg",
-  "https://live.staticflickr.com/65535/54915925136_5d1976fa6b_w.jpg", "https://live.staticflickr.com/65535/54916138073_ca53caef9d_w.jpg",
-  "https://live.staticflickr.com/65535/54916224220_eddaba61b3_w.jpg", "https://live.staticflickr.com/65535/54916138018_04d5493370_w.jpg",
-  "https://live.staticflickr.com/65535/54915928721_8eae2109eb_w.jpg", "https://live.staticflickr.com/65535/54916137933_97aca94a6d_w.jpg",
-  "https://live.staticflickr.com/65535/54915062372_be9d77d703_w.jpg", "https://live.staticflickr.com/65535/54916171914_a31b08923c_w.jpg",
-  "https://live.staticflickr.com/65535/54916137868_51f087af6e_w.jpg", "https://live.staticflickr.com/65535/54915924996_7005bde80e_w.jpg",
-  "https://live.staticflickr.com/65535/54915062272_34dc9201b8_w.jpg", "https://live.staticflickr.com/65535/54916171824_6081832cdf_w.jpg",
-  "https://live.staticflickr.com/65535/54916171769_9b49513947_w.jpg", "https://live.staticflickr.com/65535/54916171749_c0e6e53a2f_w.jpg",
-  "https://live.staticflickr.com/65535/54915062222_d9ea36d242_w.jpg", "https://live.staticflickr.com/65535/54915066452_4938dbb167_w.jpg",
-  "https://live.staticflickr.com/65535/54916137768_72220dba5b_w.jpg", "https://live.staticflickr.com/65535/54916137723_f4240f94c8_w.jpg",
-  "https://live.staticflickr.com/65535/54915924861_15c5e077ab_w.jpg", "https://live.staticflickr.com/65535/54916171644_277e8e8516_w.jpg",
-  "https://live.staticflickr.com/65535/54915924796_4408da4fd3_w.jpg", "https://live.staticflickr.com/65535/54915924746_99cf97a6fe_w.jpg",
-  "https://live.staticflickr.com/65535/54916171584_2baac763ef_w.jpg", "https://live.staticflickr.com/65535/54916137628_8ffa219708_w.jpg",
-  "https://live.staticflickr.com/65535/54915928761_7f1a6bfa4a_w.jpg", "https://live.staticflickr.com/65535/54915928746_0a0eba9c79_w.jpg",
-  "https://live.staticflickr.com/65535/54915924706_a8fbfffd28_w.jpg", "https://live.staticflickr.com/65535/54916171494_b78f095171_w.jpg",
-  "https://live.staticflickr.com/65535/54916171469_cbe31c98b2_w.jpg", "https://live.staticflickr.com/65535/54916175984_469c92a674_w.jpg",
-  "https://live.staticflickr.com/65535/54916223700_338e7ddb20_w.jpg", "https://live.staticflickr.com/65535/54915924646_459a71bd3c_w.jpg",
-  "https://live.staticflickr.com/65535/54915924596_930067b9b2_c.jpg", "https://live.staticflickr.com/65535/54915061977_0efab4c85c.jpg",
-  "https://live.staticflickr.com/65535/54916171349_449b1ab553_w.jpg", "https://live.staticflickr.com/65535/54916228240_93f8188f82_w.jpg",
-  "https://live.staticflickr.com/65535/54915061937_f387a87540_w.jpg", "https://live.staticflickr.com/65535/54916137393_30ba6c2f48_w.jpg",
-  "https://live.staticflickr.com/65535/54916171274_46bb2dccfa_w.jpg", "https://live.staticflickr.com/65535/54916228250_794f7d045b_w.jpg",
-  "https://live.staticflickr.com/65535/54916171209_531ff1b06d_w.jpg", "https://live.staticflickr.com/65535/54916228195_d60b16affb_n.jpg",
-  "https://live.staticflickr.com/65535/54916137328_b90bf99910_n.jpg", "https://live.staticflickr.com/65535/54916171189_62b0368bd0_w.jpg",
-  "https://live.staticflickr.com/65535/54916228170_c49d957edc.jpg", "https://live.staticflickr.com/65535/54915924446_38ac44b704_w.jpg",
-  "https://live.staticflickr.com/65535/54916171164_133359e2a0_w.jpg", "https://live.staticflickr.com/65535/54916137268_2897b1b7fe_w.jpg",
-  "https://live.staticflickr.com/65535/54916137243_cb58be1325_w.jpg", "https://live.staticflickr.com/65535/54916137208_06f10659f1_w.jpg",
-  "https://live.staticflickr.com/65535/54915928621_8cf4e001eb_w.jpg", "https://live.staticflickr.com/65535/54915924346_131f2e6b10_w.jpg",
-  "https://live.staticflickr.com/65535/54915924326_3c115fff2c_w.jpg", "https://live.staticflickr.com/65535/54916141758_203a84d78a_w.jpg",
-  "https://live.staticflickr.com/65535/54915924276_c60ca21af7_w.jpg", "https://live.staticflickr.com/65535/54915928611_0a5e3e649d_w.jpg",
-  "https://live.staticflickr.com/65535/54916228075_f28a421d85_w.jpg", "https://live.staticflickr.com/65535/54915061582_060a730901_w.jpg",
-  "https://live.staticflickr.com/65535/54915924176_7f41ac454f_w.jpg", "https://live.staticflickr.com/65535/54916223240_86374ca023_w.jpg",
-  "https://live.staticflickr.com/65535/54916137098_3bd800d515_w.jpg", "https://live.staticflickr.com/65535/54916170969_8dd36a8fe2.jpg",
-  "https://live.staticflickr.com/65535/54916137003_42f188709c_w.jpg", "https://live.staticflickr.com/65535/54915061372_118936db11_w.jpg",
-  "https://live.staticflickr.com/65535/54916170874_575fa79a66_w.jpg", "https://live.staticflickr.com/65535/54916228090_7982a18cac_w.jpg",
-  "https://live.staticflickr.com/65535/54916170849_e36b6a5cd7_w.jpg", "https://live.staticflickr.com/65535/54916228030_738c01415d_w.jpg",
-  "https://live.staticflickr.com/65535/54916136933_c7a8fc0e67_w.jpg", "https://live.staticflickr.com/65535/54915061292_ff0d0da7d3_w.jpg",
-  "https://live.staticflickr.com/65535/54915061277_5fc3dffd98_w.jpg", "https://live.staticflickr.com/65535/54915066222_ba347a40db_w.jpg",
-  "https://live.staticflickr.com/65535/54915061222_03bc6430d5_w.jpg", "https://live.staticflickr.com/65535/54916222975_a1bb1e3246_w.jpg",
-  "https://live.staticflickr.com/65535/54916136868_63ab6a2956_w.jpg", "https://live.staticflickr.com/65535/54916136863_495323e49e_w.jpg",
-  "https://live.staticflickr.com/65535/54915066007_b132d3752b_w.jpg", "https://live.staticflickr.com/65535/54915061167_6bd8b4c725_w.jpg",
-  "https://live.staticflickr.com/65535/54916227935_55bd704965.jpg", "https://live.staticflickr.com/65535/54915923891_68112fee67_w.jpg",
-  "https://live.staticflickr.com/65535/54915061122_2e025bc612_w.jpg", "https://live.staticflickr.com/65535/54916141548_31c9e492b9_w.jpg",
-  "https://live.staticflickr.com/65535/54915928366_cbc1e7979c_w.jpg", "https://live.staticflickr.com/65535/54916170554_d539823160_w.jpg",
-  "https://live.staticflickr.com/65535/54916222815_4b13296c27_w.jpg", "https://live.staticflickr.com/65535/54916170474_d4dcb707ee_w.jpg",
-  "https://live.staticflickr.com/65535/54916222760_0109f22d84_w.jpg", "https://live.staticflickr.com/65535/54916141498_8fae3cca73_w.jpg",
-  "https://live.staticflickr.com/65535/54916170429_103f4b0f34_w.jpg", "https://live.staticflickr.com/65535/54915065937_75785c3d6d_w.jpg",
-  "https://live.staticflickr.com/65535/54915060927_b521e11320_w.jpg"
+  "https://live.staticflickr.com/65535/54916796397_d1879f5324_b.jpg", "https://live.staticflickr.com/65535/54917876418_063860b510_b.jpg",
+  "https://live.staticflickr.com/65535/54917876468_8b06e10cec_b.jpg", "https://live.staticflickr.com/65535/54917959940_f6259cf05f_b.jpg",
+  "https://live.staticflickr.com/65535/54917959730_733870d024_b.jpg", "https://live.staticflickr.com/65535/54917655736_ae98dc21ec_b.jpg",
+  "https://live.staticflickr.com/65535/54917655671_49ce7d2ba3_b.jpg", "https://live.staticflickr.com/65535/54917909094_600ceb356f_b.jpg",
+  "https://live.staticflickr.com/65535/54916794892_140e9281bf_b.jpg", "https://live.staticflickr.com/65535/54917959050_87b0d3ca57_b.jpg",
+  "https://live.staticflickr.com/65535/54917958855_67a55349b2_b.jpg", "https://live.staticflickr.com/65535/54916794542_536680eac2_b.jpg",
+  "https://live.staticflickr.com/65535/54917874913_5d2a848f79_b.jpg", "https://live.staticflickr.com/65535/54916794672_d8d72ecf09_b.jpg",
+  "https://live.staticflickr.com/65535/54917907654_94a61c06d0_b.jpg", "https://live.staticflickr.com/65535/54917957975_b517de8624_b.jpg",
+  "https://live.staticflickr.com/65535/54916793987_9a65cf1623.jpg", "https://live.staticflickr.com/65535/54917873843_2eb9ac0d3b_b.jpg",
+  "https://live.staticflickr.com/65535/54916793517_ed2da260a5_b.jpg", "https://live.staticflickr.com/65535/54917873763_e38dc9039a_b.jpg",
+  "https://live.staticflickr.com/65535/54917873478_a3abd29507_b.jpg", "https://live.staticflickr.com/65535/54917957295_ca448bb721.jpg",
+  "https://live.staticflickr.com/65535/54917906454_e1aaa1f0ac_b.jpg", "https://live.staticflickr.com/65535/54916793062_da4fdbdb75.jpg",
+  "https://live.staticflickr.com/65535/54917872243_5c9c2f33d0_b.jpg", "https://live.staticflickr.com/65535/54917905499_b741ee4491_b.jpg",
+  "https://live.staticflickr.com/65535/54917872803_6d35b7c334_b.jpg", "https://live.staticflickr.com/65535/54917956130_ecedb284e1_b.jpg",
+  "https://live.staticflickr.com/65535/54916791402_c6acc61004_b.jpg", "https://live.staticflickr.com/65535/54916791522_6bbc38a487_b.jpg",
+  "https://live.staticflickr.com/65535/54916791342_c26791b2a5_b.jpg", "https://live.staticflickr.com/65535/54917904849_aa10cd4509.jpg",
+  "https://live.staticflickr.com/65535/54916790572_0c2f5a2a28_b.jpg", "https://live.staticflickr.com/65535/54917904329_f69275b18b_b.jpg",
+  "https://live.staticflickr.com/65535/54917954270_2f657c32fc_b.jpg", "https://live.staticflickr.com/65535/54917650546_59dfb6fedd_b.jpg",
+  "https://live.staticflickr.com/65535/54917650031_491ee8dba7_b.jpg", "https://live.staticflickr.com/65535/54917869983_6f270f6162_b.jpg",
+  "https://live.staticflickr.com/65535/54917869968_0359ee62f1_b.jpg", "https://live.staticflickr.com/65535/54917953760_cd6ed31af3_b.jpg",
+  "https://live.staticflickr.com/65535/54916788632_9c18ceda23_b.jpg", "https://live.staticflickr.com/65535/54917902359_9050d3ba4d_b.jpg",
+  "https://live.staticflickr.com/65535/54917869073_8102bbe147_b.jpg", "https://live.staticflickr.com/65535/54916788567_17ab39814e_b.jpg",
+  "https://live.staticflickr.com/65535/54916787887_c76f5df0fc_b.jpg", "https://live.staticflickr.com/65535/54917901644_1060fa6cc5_b.jpg",
+  "https://live.staticflickr.com/65535/54917868453_2af60eab32_b.jpg", "https://live.staticflickr.com/65535/54917901509_58be2f5ccc_b.jpg",
+  "https://live.staticflickr.com/65535/54916787502_dde01c8051_b.jpg", "https://live.staticflickr.com/65535/54917951905_4170ce6c2f_b.jpg",
+  "https://live.staticflickr.com/65535/54917901199_37939e5035_b.jpg", "https://live.staticflickr.com/65535/54917901219_52b12b1d80_b.jpg",
+  "https://live.staticflickr.com/65535/54917867853_ebf7c1d829_b.jpg", "https://live.staticflickr.com/65535/54917951530_142c86ce8a_b.jpg",
+  "https://live.staticflickr.com/65535/54916787232_b5fe207468_b.jpg", "https://live.staticflickr.com/65535/54917900634_c7fce2981c_b.jpg",
+  "https://live.staticflickr.com/65535/54917951230_d93fb06321_b.jpg", "https://live.staticflickr.com/65535/54916786892_27577e352f_b.jpg",
+  "https://live.staticflickr.com/65535/54917950755_9a2fe7c19c_b.jpg", "https://live.staticflickr.com/65535/54916786932_0b00d90034_b.jpg",
+  "https://live.staticflickr.com/65535/54917950705_06e4a4b3ea_b.jpg", "https://live.staticflickr.com/65535/54917900069_5236f59ece.jpg",
+  "https://live.staticflickr.com/65535/54917646761_3a429c270d_b.jpg", "https://live.staticflickr.com/65535/54916786377_179b576cb3_b.jpg",
+  "https://live.staticflickr.com/65535/54917646531_636652aa23_b.jpg", "https://live.staticflickr.com/65535/54917646411_d12d1eb6fd_b.jpg",
+  "https://live.staticflickr.com/65535/54917899469_2e67dfeecb_b.jpg", "https://live.staticflickr.com/65535/54916785867_307a47be21_b.jpg",
+  "https://live.staticflickr.com/65535/54916785827_3956393b42_b.jpg", "https://live.staticflickr.com/65535/54917898864_9c2647f2b0_b.jpg",
+  "https://live.staticflickr.com/65535/54916784917_b5a63bc634_b.jpg", "https://live.staticflickr.com/65535/54917948955_14c6151ca8_b.jpg",
+  "https://live.staticflickr.com/65535/54917645296_2433de7a22_b.jpg", "https://live.staticflickr.com/65535/54917898329_f8ecd5d8e7_b.jpg",
+  "https://live.staticflickr.com/65535/54917644931_7f1617e348.jpg", "https://live.staticflickr.com/65535/54917897954_9ebf4bc7d3_b.jpg",
+  "https://live.staticflickr.com/65535/54916784572_93a40bf2a3_b.jpg", "https://live.staticflickr.com/65535/54917898089_f1e94c1e3a_b.jpg",
+  "https://live.staticflickr.com/65535/54917947940_a19eebbd6f_b.jpg", "https://live.staticflickr.com/65535/54917864448_a45f0debf0_b.jpg",
+  "https://live.staticflickr.com/65535/54916783942_ccb160e292_b.jpg", "https://live.staticflickr.com/65535/54917897379_34f5672571_b.jpg",
+  "https://live.staticflickr.com/65535/54917863988_0cb2100275_b.jpg", "https://live.staticflickr.com/65535/54917643676_57568e4571_b.jpg",
+  "https://live.staticflickr.com/65535/54917863468_3c0b8d3aac_b.jpg", "https://live.staticflickr.com/65535/54916783162_766528372c_b.jpg",
+  "https://live.staticflickr.com/65535/54917643206_389117145a_b.jpg", "https://live.staticflickr.com/65535/54917946440_e41f74da35_b.jpg",
+  "https://live.staticflickr.com/65535/54917643011_ede018afe0_b.jpg", "https://live.staticflickr.com/65535/54917946190_5cb8507c9e_b.jpg",
+  "https://live.staticflickr.com/65535/54917895579_0a9bb46609_b.jpg", "https://live.staticflickr.com/65535/54916782052_5452524c55_b.jpg",
+  "https://live.staticflickr.com/65535/54916782277_677a69f353_b.jpg", "https://live.staticflickr.com/65535/54917945765_171dc0b5d9_b.jpg",
+  "https://live.staticflickr.com/65535/54916781292_86abf750b4.jpg", "https://live.staticflickr.com/65535/54916781387_0ea42f1e64_b.jpg",
+  "https://live.staticflickr.com/65535/54917641111_1c9edaceab_b.jpg", "https://live.staticflickr.com/65535/54917944665_5ba65caa68_b.jpg",
+  "https://live.staticflickr.com/65535/54916781252_f688320e18_b.jpg", "https://live.staticflickr.com/65535/54916781147_d209ec1f67_b.jpg",
+  "https://live.staticflickr.com/65535/54916175449_ffbc8cd5df_b.jpg", "https://live.staticflickr.com/65535/54915065847_5f30852dc5_b.jpg",
+  "https://live.staticflickr.com/65535/54915923706_9aebb9a535_b.jpg", "https://live.staticflickr.com/65535/54916136528_dac8f4acf7_b.jpg",
+  "https://live.staticflickr.com/65535/54915923666_913ea7a9bd_b.jpg", "https://live.staticflickr.com/65535/54916222555_e5bb31478e_b.jpg",
+  "https://live.staticflickr.com/65535/54916141373_5425db457b_b.jpg", "https://live.staticflickr.com/65535/54916136473_170daf7a8b_b.jpg",
+  "https://live.staticflickr.com/65535/54915060687_4af50e422a_b.jpg", "https://live.staticflickr.com/65535/54916170264_eb8101bc67_b.jpg",
+  "https://live.staticflickr.com/65535/54916175399_1d210ac18f_b.jpg", "https://live.staticflickr.com/65535/54916170184_c55b09ec5a_b.jpg",
+  "https://live.staticflickr.com/65535/54916141408_8bfb0685cb_b.jpg", "https://live.staticflickr.com/65535/54916141403_c433401d27_b.jpg",
+  "https://live.staticflickr.com/65535/54916136433_ea5c0b1cce_b.jpg", "https://live.staticflickr.com/65535/54916138313_81918ac9e6_b.jpg",
+  "https://live.staticflickr.com/65535/54915062617_841da53c80_b.jpg", "https://live.staticflickr.com/65535/54916138273_f9def8d7b6_b.jpg",
+  "https://live.staticflickr.com/65535/54916172164_4564db4482_b.jpg", "https://live.staticflickr.com/65535/54916138138_5abe30cb9b_b.jpg",
+  "https://live.staticflickr.com/65535/54916172129_78f271ea54_b.jpg", "https://live.staticflickr.com/65535/54915062507_b43aacbb44_b.jpg",
+  "https://live.staticflickr.com/65535/54915925136_5d1976fa6b_b.jpg", "https://live.staticflickr.com/65535/54916138073_ca53caef9d_b.jpg",
+  "https://live.staticflickr.com/65535/54916224220_eddaba61b3_b.jpg", "https://live.staticflickr.com/65535/54916138018_04d5493370_b.jpg",
+  "https://live.staticflickr.com/65535/54915928721_8eae2109eb_b.jpg", "https://live.staticflickr.com/65535/54916137933_97aca94a6d_b.jpg",
+  "https://live.staticflickr.com/65535/54915062372_be9d77d703_b.jpg", "https://live.staticflickr.com/65535/54916171914_a31b08923c_b.jpg",
+  "https://live.staticflickr.com/65535/54916137868_51f087af6e_b.jpg", "https://live.staticflickr.com/65535/54915924996_7005bde80e_b.jpg",
+  "https://live.staticflickr.com/65535/54915062272_34dc9201b8_b.jpg", "https://live.staticflickr.com/65535/54916171824_6081832cdf_b.jpg",
+  "https://live.staticflickr.com/65535/54916171769_9b49513947_b.jpg", "https://live.staticflickr.com/65535/54916171749_c0e6e53a2f_b.jpg",
+  "https://live.staticflickr.com/65535/54915062222_d9ea36d242_b.jpg", "https://live.staticflickr.com/65535/54915066452_4938dbb167_b.jpg",
+  "https://live.staticflickr.com/65535/54916137768_72220dba5b_b.jpg", "https://live.staticflickr.com/65535/54916137723_f4240f94c8_b.jpg",
+  "https://live.staticflickr.com/65535/54915924861_15c5e077ab_b.jpg", "https://live.staticflickr.com/65535/54916171644_277e8e8516_b.jpg",
+  "https://live.staticflickr.com/65535/54915924796_4408da4fd3_b.jpg", "https://live.staticflickr.com/65535/54915924746_99cf97a6fe_b.jpg",
+  "https://live.staticflickr.com/65535/54916171584_2baac763ef_b.jpg", "https://live.staticflickr.com/65535/54916137628_8ffa219708_b.jpg",
+  "https://live.staticflickr.com/65535/54915928761_7f1a6bfa4a_b.jpg", "https://live.staticflickr.com/65535/54915928746_0a0eba9c79_b.jpg",
+  "https://live.staticflickr.com/65535/54915924706_a8fbfffd28_b.jpg", "https://live.staticflickr.com/65535/54916171494_b78f095171_b.jpg",
+  "https://live.staticflickr.com/65535/54916171469_cbe31c98b2_b.jpg", "https://live.staticflickr.com/65535/54916175984_469c92a674_b.jpg",
+  "https://live.staticflickr.com/65535/54916223700_338e7ddb20_b.jpg", "https://live.staticflickr.com/65535/54915924646_459a71bd3c_b.jpg",
+  "https://live.staticflickr.com/65535/54915924596_930067b9b2_b.jpg", "https://live.staticflickr.com/65535/54915061977_0efab4c85c.jpg",
+  "https://live.staticflickr.com/65535/54916171349_449b1ab553_b.jpg", "https://live.staticflickr.com/65535/54916228240_93f8188f82_b.jpg",
+  "https://live.staticflickr.com/65535/54915061937_f387a87540_b.jpg", "https://live.staticflickr.com/65535/54916137393_30ba6c2f48_b.jpg",
+  "https://live.staticflickr.com/65535/54916171274_46bb2dccfa_b.jpg", "https://live.staticflickr.com/65535/54916228250_794f7d045b_b.jpg",
+  "https://live.staticflickr.com/65535/54916171209_531ff1b06d_b.jpg", "https://live.staticflickr.com/65535/54916228195_d60b16affb_b.jpg",
+  "https://live.staticflickr.com/65535/54916137328_b90bf99910_b.jpg", "https://live.staticflickr.com/65535/54916171189_62b0368bd0_b.jpg",
+  "https://live.staticflickr.com/65535/54916228170_c49d957edc.jpg", "https://live.staticflickr.com/65535/54915924446_38ac44b704_b.jpg",
+  "https://live.staticflickr.com/65535/54916171164_133359e2a0_b.jpg", "https://live.staticflickr.com/65535/54916137268_2897b1b7fe_b.jpg",
+  "https://live.staticflickr.com/65535/54916137243_cb58be1325_b.jpg", "https://live.staticflickr.com/65535/54916137208_06f10659f1_b.jpg",
+  "https://live.staticflickr.com/65535/54915928621_8cf4e001eb_b.jpg", "https://live.staticflickr.com/65535/54915924346_131f2e6b10_b.jpg",
+  "https://live.staticflickr.com/65535/54915924326_3c115fff2c_b.jpg", "https://live.staticflickr.com/65535/54916141758_203a84d78a_b.jpg",
+  "https://live.staticflickr.com/65535/54915924276_c60ca21af7_b.jpg", "https://live.staticflickr.com/65535/54915928611_0a5e3e649d_b.jpg",
+  "https://live.staticflickr.com/65535/54916228075_f28a421d85_b.jpg", "https://live.staticflickr.com/65535/54915061582_060a730901_b.jpg",
+  "https://live.staticflickr.com/65535/54915924176_7f41ac454f_b.jpg", "https://live.staticflickr.com/65535/54916223240_86374ca023_b.jpg",
+  "https://live.staticflickr.com/65535/54916137098_3bd800d515_b.jpg", "https://live.staticflickr.com/65535/54916170969_8dd36a8fe2.jpg",
+  "https://live.staticflickr.com/65535/54916137003_42f188709c_b.jpg", "https://live.staticflickr.com/65535/54915061372_118936db11_b.jpg",
+  "https://live.staticflickr.com/65535/54916170874_575fa79a66_b.jpg", "https://live.staticflickr.com/65535/54916228090_7982a18cac_b.jpg",
+  "https://live.staticflickr.com/65535/54916170849_e36b6a5cd7_b.jpg", "https://live.staticflickr.com/65535/54916228030_738c01415d_b.jpg",
+  "https://live.staticflickr.com/65535/54916136933_c7a8fc0e67_b.jpg", "https://live.staticflickr.com/65535/54915061292_ff0d0da7d3_b.jpg",
+  "https://live.staticflickr.com/65535/54915061277_5fc3dffd98_b.jpg", "https://live.staticflickr.com/65535/54915066222_ba347a40db_b.jpg",
+  "https://live.staticflickr.com/65535/54915061222_03bc6430d5_b.jpg", "https://live.staticflickr.com/65535/54916222975_a1bb1e3246_b.jpg",
+  "https://live.staticflickr.com/65535/54916136868_63ab6a2956_b.jpg", "https://live.staticflickr.com/65535/54916136863_495323e49e_b.jpg",
+  "https://live.staticflickr.com/65535/54915066007_b132d3752b_b.jpg", "https://live.staticflickr.com/65535/54915061167_6bd8b4c725_b.jpg",
+  "https://live.staticflickr.com/65535/54916227935_55bd704965.jpg", "https://live.staticflickr.com/65535/54915923891_68112fee67_b.jpg",
+  "https://live.staticflickr.com/65535/54915061122_2e025bc612_b.jpg", "https://live.staticflickr.com/65535/54916141548_31c9e492b9_b.jpg",
+  "https://live.staticflickr.com/65535/54915928366_cbc1e7979c_b.jpg", "https://live.staticflickr.com/65535/54916170554_d539823160_b.jpg",
+  "https://live.staticflickr.com/65535/54916222815_4b13296c27_b.jpg", "https://live.staticflickr.com/65535/54916170474_d4dcb707ee_b.jpg",
+  "https://live.staticflickr.com/65535/54916222760_0109f22d84_b.jpg", "https://live.staticflickr.com/65535/54916141498_8fae3cca73_b.jpg",
+  "https://live.staticflickr.com/65535/54916170429_103f4b0f34_b.jpg", "https://live.staticflickr.com/65535/54915065937_75785c3d6d_b.jpg",
+  "https://live.staticflickr.com/65535/54915060927_b521e11320_b.jpg"
 ];
 
 // --- SUB-COMPONENTES (MEMO) ---
@@ -146,14 +148,7 @@ const CinematicFade = memo(({ children, delay = 0 }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-        // Efeito exclusivo Mobile: Saturação muda no scroll
-        filter: typeof window !== 'undefined' && window.innerWidth < 768
-          ? ["grayscale(100%) saturate(0%)", "grayscale(0%) saturate(120%)"]
-          : "none"
-      }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: false, margin: "-20% 0px -20% 0px" }}
       transition={{ duration: 0.8, delay, ease: "easeOut" }}
     >
@@ -267,9 +262,32 @@ export default function App() {
   const setPtr = useCallback(() => setCursorVariant("pointer"), []);
   const setDef = useCallback(() => setCursorVariant("default"), []);
 
+  // Drag-to-scroll gallery
+  const galleryRef = useRef(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+  const handleGalleryMouseDown = useCallback((e) => {
+    isDragging.current = true;
+    startX.current = e.pageX - galleryRef.current.offsetLeft;
+    scrollLeft.current = galleryRef.current.scrollLeft;
+    galleryRef.current.style.cursor = 'grabbing';
+  }, []);
+  const handleGalleryMouseMove = useCallback((e) => {
+    if (!isDragging.current) return;
+    e.preventDefault();
+    const x = e.pageX - galleryRef.current.offsetLeft;
+    const walk = (x - startX.current) * 2;
+    galleryRef.current.scrollLeft = scrollLeft.current - walk;
+  }, []);
+  const handleGalleryMouseUp = useCallback(() => {
+    isDragging.current = false;
+    if (galleryRef.current) galleryRef.current.style.cursor = 'grab';
+  }, []);
+
   return (
     <div className={`min-h-screen font-['Outfit',_sans-serif] selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-700 ${isDarkMode ? 'bg-[#050505] text-white' : 'bg-white text-zinc-900'}`}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } .modal-open, .modal-open * { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap'); body, a, button, iframe, input, textarea, .cursor-pointer { cursor: none !important; } .modal-open, .modal-open * { cursor: auto !important; } .no-scrollbar::-webkit-scrollbar { display: none; } .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; } .drag-scroll { cursor: grab; overflow-x: auto; -webkit-overflow-scrolling: touch; } .drag-scroll::-webkit-scrollbar { display: none; } .drag-scroll { scrollbar-width: none; }`}</style>
 
       {!selectedVideo && (
         <motion.div className="fixed top-0 left-0 rounded-full pointer-events-none z-[9999] hidden md:flex items-center justify-center mix-blend-difference bg-white" style={{ x: mouseX, y: mouseY, translateX: "-50%", translateY: "-50%" }} animate={{ height: cursorVariant === "pointer" ? 80 : 20, width: cursorVariant === "pointer" ? 80 : 20, boxShadow: cursorVariant === "pointer" ? "0 0 60px 15px rgba(255, 255, 255, 0.8)" : "0 0 20px 5px rgba(255, 255, 255, 0.4)" }} transition={{ type: "tween", ease: "backOut", duration: 0.2 }}>
@@ -366,7 +384,7 @@ export default function App() {
                   decoding="async"
                   // No Desktop (md:), volta a ser P&B e satura no hover
                   // No Mobile, a cor é controlada pelo filtro dinâmico do CinematicFade
-                  className="w-full h-full object-cover transition-all duration-700 md:grayscale md:group-hover:grayscale-0 md:group-hover:scale-110"
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
                   alt={item.title}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent p-4 flex flex-col justify-end">
@@ -385,10 +403,23 @@ export default function App() {
             <div><span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] mb-4 ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>Fotografia</span><h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase">Lens<span className="text-zinc-500">.</span></h2><span className="text-[9px] text-zinc-500 tracking-widest mt-2 block">[ CLIQUE PARA VER A GALERIA COMPLETA ]</span></div>
           </div>
         </CinematicFade>
-        <div className="flex w-full overflow-hidden" onClick={() => setIsGalleryOpen(true)} onMouseEnter={setPtr} onMouseLeave={setDef}>
-          <motion.div className="flex gap-4" animate={{ x: ["0%", "-100%"] }} style={{ willChange: "transform" }} transition={{ duration: 4000, repeat: Infinity, ease: "linear" }}>
-            {shuffledGallery.map((src, index) => (<div key={index} className="relative w-[300px] md:w-[400px] aspect-[4/5] flex-shrink-0 rounded-2xl overflow-hidden cursor-none"><img src={src} loading="lazy" decoding="async" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 scale-100 hover:scale-110" alt={`Gallery ${index}`} /></div>))}
-          </motion.div>
+        <div
+          ref={galleryRef}
+          className="flex w-full gap-4 drag-scroll no-scrollbar py-4"
+          onMouseDown={handleGalleryMouseDown}
+          onMouseMove={handleGalleryMouseMove}
+          onMouseUp={handleGalleryMouseUp}
+          onMouseLeave={handleGalleryMouseUp}
+        >
+          {shuffledGallery.slice(0, 30).map((src, index) => (
+            <div
+              key={index}
+              className="relative w-[300px] md:w-[400px] aspect-[4/5] flex-shrink-0 rounded-2xl overflow-hidden"
+              onClick={(e) => { if (!isDragging.current) setIsGalleryOpen(true); }}
+            >
+              <img src={src} loading="lazy" decoding="async" className="w-full h-full object-cover transition-all duration-700 hover:scale-110 pointer-events-none" alt={`Gallery ${index}`} />
+            </div>
+          ))}
         </div>
       </section>
 
@@ -396,7 +427,7 @@ export default function App() {
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-20 items-center">
           <CinematicFade>
             <div className={`relative aspect-square rounded-[60px] overflow-hidden border group transition-colors duration-700 cursor-none ${isDarkMode ? 'border-white/5' : 'border-black/5'}`}>
-              <img src="/gabson.jpg" loading="lazy" decoding="async" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" alt="Founder" />
+              <img src="/gabson.jpg" loading="lazy" decoding="async" className="w-full h-full object-cover transition-all duration-1000" alt="Founder" />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all"></div>
               <div className="absolute bottom-8 right-8">
                 <motion.a href="https://instagram.com/gabsonnn" target="_blank" whileHover={{ scale: 1.1 }} className={`w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-xl border shadow-lg transition-all cursor-none ${isDarkMode ? 'bg-white/10 border-white/20 text-white hover:bg-white/20' : 'bg-black/10 border-black/20 text-black hover:bg-black/20'}`} onMouseEnter={setPtr} onMouseLeave={setDef}>
