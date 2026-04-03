@@ -193,7 +193,8 @@ export default function App() {
 
   // DATABASE VIDEOS
   const portfolioItems = useMemo(() => [
-    { id: 30, title: "GABRIELLA STEHLING - COVERS", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/yrkck9BhKqo", thumb: "https://i.ytimg.com/vi_webp/yrkck9BhKqo/maxresdefault.webp", featured: true },
+    { id: 32, title: "GABRIELLA STEHLING - JEOVÁ JIREH", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/rQlMRuub6vo", thumb: "https://i.ytimg.com/vi_webp/rQlMRuub6vo/maxresdefault.webp", featured: true },
+    { id: 30, title: "GABRIELLA STEHLING - TU ÉS", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/yrkck9BhKqo", thumb: "https://i.ytimg.com/vi_webp/yrkck9BhKqo/maxresdefault.webp", featured: true },
     { id: 1, title: "QUAL É O SEU PROPÓSITO?", category: "Documentário", quality: "4K", url: "https://www.youtube.com/embed/bU2cVO3vUjw", thumb: "https://i.ytimg.com/vi_webp/bU2cVO3vUjw/maxresdefault.webp" },
     { id: 2, title: "Karoline & Winiston", category: "Casamento", quality: "4K", url: "https://www.youtube.com/embed/njXorYxbRfU", thumb: "https://i.ytimg.com/vi_webp/njXorYxbRfU/maxresdefault.webp" },
     { id: 5, title: "O ORÁCULO", category: "Reality Show", quality: "4K", url: "https://www.youtube.com/embed/efa_PSKMHLk", thumb: "https://i.ytimg.com/vi_webp/efa_PSKMHLk/maxresdefault.webp" },
@@ -505,23 +506,54 @@ export default function App() {
         <div className="max-w-[1200px] mx-auto text-center">
           <CinematicFade>
             <span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] mb-4 ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>
-              Lançamento
+              Lançamentos
             </span>
             <h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase mb-4 md:mb-6">
               Gabriella Stehling<span className="text-zinc-500">.</span>
             </h2>
-            <p className="text-zinc-500 text-lg leading-relaxed font-light max-w-2xl mx-auto mb-8">
-              O projeto Covers de Gabriella Stehling acaba de ser lançado! Assista agora ao clipe exclusivo produzido pela KIGER.
+            <p className="text-zinc-500 text-lg leading-relaxed font-light max-w-2xl mx-auto mb-10 md:mb-16">
+              A Temporada de Covers de Gabriella Stehling está no ar! Assista aos novos lançamentos produzidos em 4K pela KIGER.
             </p>
-            <button
-              onClick={() => setSelectedVideo({ url: 'https://www.youtube.com/embed/yrkck9BhKqo' })}
-              onMouseEnter={setPtr}
-              onMouseLeave={setDef}
-              className={`inline-flex items-center gap-3 px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs border transition-all duration-300 hover:scale-105 shadow-lg ${isDarkMode ? 'bg-white text-black border-white hover:bg-white/90' : 'bg-black text-white border-black hover:bg-black/90'}`}
-            >
-              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d={ICON_PATHS.Play} /></svg>
-              Assistir Agora
-            </button>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 max-w-5xl mx-auto mb-8">
+              {[
+                { title: "Jeová Jireh", url: "https://www.youtube.com/embed/rQlMRuub6vo", thumb: "https://i.ytimg.com/vi_webp/rQlMRuub6vo/maxresdefault.webp" },
+                { title: "Tu És", url: "https://www.youtube.com/embed/yrkck9BhKqo", thumb: "https://i.ytimg.com/vi_webp/yrkck9BhKqo/maxresdefault.webp" }
+              ].map((v, i) => (
+                <motion.div 
+                  key={i} 
+                  whileHover={{ y: -10 }} 
+                  className={`group relative aspect-video rounded-[30px] md:rounded-[40px] overflow-hidden cursor-none border shadow-2xl transition-all duration-500 ${isDarkMode ? 'border-white/10 bg-zinc-900' : 'border-black/10 bg-zinc-100'}`}
+                  onMouseEnter={setPtr}
+                  onMouseLeave={setDef}
+                  onClick={() => setSelectedVideo(v)}
+                >
+                  <img src={v.thumb} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" alt={v.title} loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent flex items-center justify-center">
+                    <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20 group-hover:scale-110 group-hover:bg-white group-hover:border-white transition-all duration-500 shadow-2xl">
+                      <svg className="w-6 h-6 md:w-8 md:h-8 text-white group-hover:text-black fill-current transition-colors" viewBox="0 0 24 24"><path d={ICON_PATHS.Play} /></svg>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 text-left">
+                    <p className="text-[9px] md:text-[10px] font-bold text-white/50 uppercase tracking-[0.3em] mb-1">Gabriella Stehling</p>
+                    <h4 className="text-lg md:text-2xl font-black text-white uppercase tracking-tighter">{v.title}</h4>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
+            <div className="mt-8 md:mt-12">
+              <a 
+                href="https://www.youtube.com/@gabriellastehling" 
+                target="_blank"
+                onMouseEnter={setPtr}
+                onMouseLeave={setDef}
+                className={`inline-flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all hover:gap-6 ${isDarkMode ? 'text-white' : 'text-black'}`}
+              >
+                Ver Canal Completo
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </a>
+            </div>
           </CinematicFade>
         </div>
       </section>
@@ -544,7 +576,7 @@ export default function App() {
               <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onMouseEnter={setPtr} onMouseLeave={setDef} className={`w-full py-4 uppercase font-bold tracking-[0.3em] text-[10px] border backdrop-blur-xl shadow-lg transition-all duration-300 cursor-none rounded-xl ${isDarkMode ? 'bg-white/10 border-white/20 text-white hover:bg-white/20' : 'bg-black/10 border-black/20 text-black hover:bg-black/20'}`}>Enviar Mensagem</motion.button>
             </form>
           </div>
-          <div className="text-center mb-12 md:mb-20"><a href="mailto:contato@kiger.com" onMouseEnter={setPtr} onMouseLeave={setDef} className="group relative inline-block text-xl md:text-6xl font-black tracking-tighter transition-colors hover:text-zinc-500 break-all">CONTATO<span className="text-zinc-500 group-hover:text-zinc-400 transition-colors">@</span>KIGER.COM<span className={`absolute bottom-0 left-0 w-full h-[2px] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out ${isDarkMode ? 'bg-white' : 'bg-black'}`}></span></a></div>
+          <div className="text-center mb-12 md:mb-20"><a href="mailto:KIGERPRODUTORA@GMAIL.COM" onMouseEnter={setPtr} onMouseLeave={setDef} className="group relative inline-block text-xl md:text-6xl font-black tracking-tighter transition-colors hover:text-zinc-500 break-all">KIGERPRODUTORA<span className="text-zinc-500 group-hover:text-zinc-400 transition-colors">@</span>GMAIL.COM<span className={`absolute bottom-0 left-0 w-full h-[2px] origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ease-out ${isDarkMode ? 'bg-white' : 'bg-black'}`}></span></a></div>
           <div className="flex flex-col md:flex-row justify-between items-end"><div className="flex flex-col gap-2"><span className={isDarkMode ? 'text-white' : 'text-zinc-900'}>São Paulo, BR</span><span className="text-zinc-500 text-[10px] tracking-widest">DISPONÍVEL GLOBALMENTE</span></div><div className="text-right mt-12 md:mt-0"><span className="text-zinc-500 font-bold block">© 2026 KIGER</span><span className="text-zinc-600 text-[8px] uppercase tracking-widest">Todos os direitos reservados</span></div></div>
         </div>
       </section>
