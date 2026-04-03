@@ -394,8 +394,8 @@ export default function App() {
                 <div className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-medium text-white/90 tracking-widest uppercase"><span>2026</span><span className="text-zinc-500">|</span><span>{heroItems[currentHeroIndex].category}</span><span className="text-zinc-500">|</span><span className="border border-white/20 px-2 py-0.5 rounded text-[9px] md:text-[10px]">{heroItems[currentHeroIndex].quality}</span></div>
                 <p className="text-white/60 max-w-lg text-xs md:text-base font-light leading-relaxed hidden md:block">Uma produção audiovisual com a assinatura KIGER. Mergulhe em narrativas visuais que transformam momentos em cinema.</p>
                 <div className="flex items-center gap-3 mt-2 md:mt-4 w-full md:w-auto">
-                  <button onClick={() => setSelectedVideo(heroItems[currentHeroIndex])} className="flex items-center justify-center gap-2 md:gap-3 bg-white text-black px-5 md:px-8 py-3 rounded-lg md:rounded-md font-bold hover:bg-white/90 transition-colors uppercase tracking-widest text-[10px] md:text-xs shadow-xl flex-1 md:flex-none" onMouseEnter={setPtr} onMouseLeave={setDef}><svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d={ICON_PATHS.Play} /></svg>Assistir</button>
-                  <button onClick={() => document.getElementById('work').scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-center gap-2 md:gap-3 bg-white/10 border border-white/20 text-white px-5 md:px-8 py-3 rounded-lg md:rounded-md font-bold backdrop-blur-xl hover:bg-white/20 transition-all duration-300 uppercase tracking-widest text-[10px] md:text-xs shadow-lg flex-1 md:flex-none" onMouseEnter={setPtr} onMouseLeave={setDef}><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={ICON_PATHS.Info} /></svg>Mais Info</button>
+                  <button onClick={() => setSelectedVideo(heroItems[currentHeroIndex])} className="flex items-center justify-center gap-2 md:gap-3 bg-white text-black px-5 md:px-8 py-3 rounded-lg md:rounded-md font-bold hover:bg-white/90 transition-colors uppercase tracking-widest text-[10px] md:text-xs shadow-xl flex-1 md:flex-none" onMouseEnter={setPtr} onMouseLeave={setDef}><svg className="w-4 h-4 fill-current flex-shrink-0" viewBox="0 0 24 24"><path d={ICON_PATHS.Play} /></svg><span>Assistir</span></button>
+                  <button onClick={() => document.getElementById('work').scrollIntoView({ behavior: 'smooth' })} className="flex items-center justify-center gap-2 md:gap-3 bg-white/10 border border-white/20 text-white px-5 md:px-8 py-3 rounded-lg md:rounded-md font-bold backdrop-blur-xl hover:bg-white/20 transition-all duration-300 uppercase tracking-widest text-[10px] md:text-xs shadow-lg flex-1 md:flex-none" onMouseEnter={setPtr} onMouseLeave={setDef}><svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={ICON_PATHS.Info} /></svg><span>Mais Info</span></button>
                 </div>
               </motion.div>
             )}
@@ -411,6 +411,62 @@ export default function App() {
               {CLIENTS.map((client) => (<img key={`${idx}-${client.id}`} src={client.logo} alt={client.name} decoding="async" loading="lazy" className={`h-16 md:h-24 w-auto object-contain opacity-50 group-hover:opacity-100 transition-all duration-500 cursor-none ${isDarkMode ? 'brightness-0 invert hover:brightness-100 hover:invert-0' : 'brightness-0 hover:filter-none'}`} />))}
             </motion.div>
           ))}
+        </div>
+      </section>
+
+      <section id="em-breve" className={`py-20 md:py-32 px-4 md:px-6 overflow-hidden relative group transition-colors duration-700 ${isDarkMode ? 'bg-zinc-900/20' : 'bg-black/5'}`}>
+        <div className="max-w-[1200px] mx-auto text-center">
+          <CinematicFade>
+            <span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] mb-4 ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>
+              Lançamentos
+            </span>
+            <h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase mb-4 md:mb-6">
+              Gabriella Stehling<span className="text-zinc-500">.</span>
+            </h2>
+            <p className="text-zinc-500 text-lg leading-relaxed font-light max-w-2xl mx-auto mb-10 md:mb-16">
+              A Temporada de Covers de Gabriella Stehling está no ar! Assista aos novos lançamentos produzidos em 4K pela KIGER.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 max-w-5xl mx-auto mb-8">
+              {[
+                { title: "Jeová Jireh", url: "https://www.youtube.com/embed/rQlMRuub6vo", thumb: "https://i.ytimg.com/vi_webp/rQlMRuub6vo/maxresdefault.webp" },
+                { title: "Tu És", url: "https://www.youtube.com/embed/yrkck9BhKqo", thumb: "https://i.ytimg.com/vi_webp/yrkck9BhKqo/maxresdefault.webp" }
+              ].map((v, i) => (
+                <motion.div 
+                  key={i} 
+                  whileHover={{ y: -10 }} 
+                  className={`group relative aspect-video rounded-[30px] md:rounded-[40px] overflow-hidden cursor-none border shadow-2xl transition-all duration-500 ${isDarkMode ? 'border-white/10 bg-zinc-900' : 'border-black/10 bg-zinc-100'}`}
+                  onMouseEnter={setPtr}
+                  onMouseLeave={setDef}
+                  onClick={() => setSelectedVideo(v)}
+                >
+                  <img src={v.thumb} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" alt={v.title} loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent flex items-center justify-center">
+                    <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20 group-hover:scale-110 group-hover:bg-white group-hover:border-white transition-all duration-500 shadow-2xl">
+                      <svg className="w-6 h-6 md:w-8 md:h-8 text-white group-hover:text-black fill-current transition-colors" viewBox="0 0 24 24"><path d={ICON_PATHS.Play} /></svg>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 text-left">
+                    <p className="text-[9px] md:text-[10px] font-bold text-white/50 uppercase tracking-[0.3em] mb-1">Gabriella Stehling</p>
+                    <h4 className="text-lg md:text-2xl font-black text-white uppercase tracking-tighter">{v.title}</h4>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
+            <div className="mt-8 md:mt-12">
+              <a 
+                href="https://www.youtube.com/@gabriellastehling" 
+                target="_blank"
+                onMouseEnter={setPtr}
+                onMouseLeave={setDef}
+                className={`inline-flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all hover:gap-6 ${isDarkMode ? 'text-white' : 'text-black'}`}
+              >
+                Ver Canal Completo
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </a>
+            </div>
+          </CinematicFade>
         </div>
       </section>
 
@@ -502,61 +558,6 @@ export default function App() {
         </div>
       </section>
 
-      <section id="em-breve" className={`py-20 md:py-32 px-4 md:px-6 overflow-hidden relative group transition-colors duration-700 ${isDarkMode ? 'bg-zinc-900/20' : 'bg-black/5'}`}>
-        <div className="max-w-[1200px] mx-auto text-center">
-          <CinematicFade>
-            <span className={`inline-block px-3 py-1 border rounded-full text-[9px] uppercase tracking-[0.2em] mb-4 ${isDarkMode ? 'border-white/20 text-zinc-400' : 'border-black/20 text-zinc-600'}`}>
-              Lançamentos
-            </span>
-            <h2 className="text-3xl md:text-6xl font-black tracking-tighter uppercase mb-4 md:mb-6">
-              Gabriella Stehling<span className="text-zinc-500">.</span>
-            </h2>
-            <p className="text-zinc-500 text-lg leading-relaxed font-light max-w-2xl mx-auto mb-10 md:mb-16">
-              A Temporada de Covers de Gabriella Stehling está no ar! Assista aos novos lançamentos produzidos em 4K pela KIGER.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 max-w-5xl mx-auto mb-8">
-              {[
-                { title: "Jeová Jireh", url: "https://www.youtube.com/embed/rQlMRuub6vo", thumb: "https://i.ytimg.com/vi_webp/rQlMRuub6vo/maxresdefault.webp" },
-                { title: "Tu És", url: "https://www.youtube.com/embed/yrkck9BhKqo", thumb: "https://i.ytimg.com/vi_webp/yrkck9BhKqo/maxresdefault.webp" }
-              ].map((v, i) => (
-                <motion.div 
-                  key={i} 
-                  whileHover={{ y: -10 }} 
-                  className={`group relative aspect-video rounded-[30px] md:rounded-[40px] overflow-hidden cursor-none border shadow-2xl transition-all duration-500 ${isDarkMode ? 'border-white/10 bg-zinc-900' : 'border-black/10 bg-zinc-100'}`}
-                  onMouseEnter={setPtr}
-                  onMouseLeave={setDef}
-                  onClick={() => setSelectedVideo(v)}
-                >
-                  <img src={v.thumb} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" alt={v.title} loading="lazy" decoding="async" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent flex items-center justify-center">
-                    <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20 group-hover:scale-110 group-hover:bg-white group-hover:border-white transition-all duration-500 shadow-2xl">
-                      <svg className="w-6 h-6 md:w-8 md:h-8 text-white group-hover:text-black fill-current transition-colors" viewBox="0 0 24 24"><path d={ICON_PATHS.Play} /></svg>
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 text-left">
-                    <p className="text-[9px] md:text-[10px] font-bold text-white/50 uppercase tracking-[0.3em] mb-1">Gabriella Stehling</p>
-                    <h4 className="text-lg md:text-2xl font-black text-white uppercase tracking-tighter">{v.title}</h4>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-            
-            <div className="mt-8 md:mt-12">
-              <a 
-                href="https://www.youtube.com/@gabriellastehling" 
-                target="_blank"
-                onMouseEnter={setPtr}
-                onMouseLeave={setDef}
-                className={`inline-flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all hover:gap-6 ${isDarkMode ? 'text-white' : 'text-black'}`}
-              >
-                Ver Canal Completo
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-              </a>
-            </div>
-          </CinematicFade>
-        </div>
-      </section>
 
       <section id="contato" className={`relative py-20 md:py-32 px-4 md:px-6 overflow-hidden transition-all duration-700 ${isDarkMode ? 'bg-[#050505] shadow-[0_-10px_40px_-10px_rgba(255,255,255,0.05)]' : 'bg-[#ffffff] shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.1)]'}`}>
         <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[400px] blur-[150px] rounded-full pointer-events-none opacity-50 ${isDarkMode ? 'bg-white/5' : 'bg-black/5'}`}></div>
