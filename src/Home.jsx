@@ -193,6 +193,7 @@ export default function Home() {
 
   // DATABASE VIDEOS
   const portfolioItems = useMemo(() => [
+    { id: 33, title: "GABRIELLA STEHLING - MEU RESPIRAR", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/WeBx8Ewkm4I", thumb: "https://i.ytimg.com/vi_webp/WeBx8Ewkm4I/maxresdefault.webp", featured: true },
     { id: 32, title: "GABRIELLA STEHLING - JEOVÁ JIREH", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/rQlMRuub6vo", thumb: "https://i.ytimg.com/vi_webp/rQlMRuub6vo/maxresdefault.webp", featured: true },
     { id: 30, title: "GABRIELLA STEHLING - TU ÉS", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/yrkck9BhKqo", thumb: "https://i.ytimg.com/vi_webp/yrkck9BhKqo/maxresdefault.webp", featured: true },
     { id: 1, title: "QUAL É O SEU PROPÓSITO?", category: "Documentário", quality: "4K", url: "https://www.youtube.com/embed/bU2cVO3vUjw", thumb: "https://i.ytimg.com/vi_webp/bU2cVO3vUjw/maxresdefault.webp" },
@@ -221,7 +222,6 @@ export default function Home() {
     { id: 20, title: "E SE", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/wZKhJTfWJjE", thumb: "https://i.ytimg.com/vi_webp/wZKhJTfWJjE/maxresdefault.webp" },
     { id: 8, title: "O ORÁCULO | MAKING OF", category: "Bastidores", quality: "HD", url: "https://www.youtube.com/embed/CZMyydSDaq0", thumb: "https://i.ytimg.com/vi_webp/CZMyydSDaq0/maxresdefault.webp" },
     { id: 6, title: "CICATRIZES | MAKING OF", category: "Bastidores", quality: "HD", url: "https://www.youtube.com/embed/lJT58HZHD7g", thumb: "https://i.ytimg.com/vi_webp/lJT58HZHD7g/maxresdefault.webp" },
-    { id: 7, title: "O ORÁCULO | TEASER", category: "Teaser", quality: "4K", url: "https://www.youtube.com/embed/T3tudtTkGuQ", thumb: "https://i.ytimg.com/vi_webp/T3tudtTkGuQ/maxresdefault.webp" },
   ], []);
 
   const [shuffledGallery] = useState(() => {
@@ -405,10 +405,10 @@ export default function Home() {
 
       <section className="py-12 md:py-24 overflow-hidden relative z-10 group select-none bg-transparent">
         <div className="absolute inset-0 pointer-events-none z-20" style={{ background: `linear-gradient(90deg, ${isDarkMode ? '#050505' : '#ffffff'} 0%, transparent 20%, transparent 80%, ${isDarkMode ? '#050505' : '#ffffff'} 100%)` }}></div>
-        <div className="flex w-full">
-          {[1, 2].map((_, idx) => (
-            <motion.div key={idx} initial={{ x: 0 }} animate={{ x: "-100%" }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }} style={{ willChange: "transform" }} className="flex gap-32 pr-32 flex-shrink-0 items-center group-hover:[animation-play-state:paused]">
-              {CLIENTS.map((client) => (<img key={`${idx}-${client.id}`} src={client.logo} alt={client.name} decoding="async" loading="lazy" className={`h-16 md:h-24 w-auto object-contain opacity-50 group-hover:opacity-100 transition-all duration-500 cursor-none ${isDarkMode ? 'brightness-0 invert hover:brightness-100 hover:invert-0' : 'brightness-0 hover:filter-none'}`} />))}
+        <div className="flex">
+          {[1, 2, 3, 4].map((_, idx) => (
+            <motion.div key={idx} initial={{ x: 0 }} animate={{ x: "-100%" }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} style={{ willChange: "transform" }} className="flex gap-12 md:gap-24 items-center flex-shrink-0 px-6 md:px-12 group-hover:[animation-play-state:paused]">
+              {CLIENTS.map((client) => (<img key={`${idx}-${client.id}`} src={client.logo} alt={client.name} decoding="async" loading="lazy" className={`h-12 md:h-16 w-auto object-contain opacity-50 group-hover:opacity-100 transition-all duration-500 cursor-none ${isDarkMode ? 'brightness-0 invert hover:brightness-100 hover:invert-0' : 'brightness-0 hover:filter-none'}`} />))}
             </motion.div>
           ))}
         </div>
@@ -424,11 +424,12 @@ export default function Home() {
               Gabriella Stehling<span className="text-zinc-500">.</span>
             </h2>
             <p className="text-zinc-500 text-lg leading-relaxed font-light max-w-2xl mx-auto mb-10 md:mb-16">
-              A Temporada de Covers de Gabriella Stehling está no ar! Assista aos novos lançamentos produzidos em 4K pela KIGER.
+              A Temporada de Covers de Gabriella Stehling está no ar! Assista aos novos lançamentos produzidos pela KIGER.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 max-w-5xl mx-auto mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 max-w-6xl mx-auto mb-8">
               {[
+                { title: "Meu Respirar", url: "https://www.youtube.com/embed/WeBx8Ewkm4I", thumb: "https://i.ytimg.com/vi_webp/WeBx8Ewkm4I/maxresdefault.webp" },
                 { title: "Jeová Jireh", url: "https://www.youtube.com/embed/rQlMRuub6vo", thumb: "https://i.ytimg.com/vi_webp/rQlMRuub6vo/maxresdefault.webp" },
                 { title: "Tu És", url: "https://www.youtube.com/embed/yrkck9BhKqo", thumb: "https://i.ytimg.com/vi_webp/yrkck9BhKqo/maxresdefault.webp" }
               ].map((v, i) => (
