@@ -193,6 +193,7 @@ export default function Home() {
 
   // DATABASE VIDEOS
   const portfolioItems = useMemo(() => [
+    { id: 34, title: "GABRIELLA STEHLING - ENTREGO A TI", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/1YKP5mdZxoM", thumb: "https://i.ytimg.com/vi_webp/1YKP5mdZxoM/maxresdefault.webp", featured: true },
     { id: 33, title: "GABRIELLA STEHLING - MEU RESPIRAR", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/WeBx8Ewkm4I", thumb: "https://i.ytimg.com/vi_webp/WeBx8Ewkm4I/maxresdefault.webp", featured: true },
     { id: 32, title: "GABRIELLA STEHLING - JEOVÁ JIREH", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/rQlMRuub6vo", thumb: "https://i.ytimg.com/vi_webp/rQlMRuub6vo/maxresdefault.webp", featured: true },
     { id: 30, title: "GABRIELLA STEHLING - TU ÉS", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/yrkck9BhKqo", thumb: "https://i.ytimg.com/vi_webp/yrkck9BhKqo/maxresdefault.webp", featured: true },
@@ -214,7 +215,7 @@ export default function Home() {
     { id: 12, title: "DEUS SABE, DEUS OUVE, DEUS VÊ", category: "Clipe", quality: "HD", url: "https://www.youtube.com/embed/mDa9Jx8_etU", thumb: "https://i.ytimg.com/vi_webp/mDa9Jx8_etU/maxresdefault.webp" },
     { id: 28, title: "SOMENTE A TI", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/3QvjBGy1tMo", thumb: "https://i.ytimg.com/vi_webp/3QvjBGy1tMo/maxresdefault.webp" },
     { id: 26, title: "ESTRELA DO SENHOR", category: "Clipe", quality: "HD", url: "https://www.youtube.com/embed/ekMw5K4c8BA", thumb: "https://i.ytimg.com/vi_webp/ekMw5K4c8BA/maxresdefault.webp" },
-    { id: 21, title: "ENTREGO A TI", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/Z7M1OdEck_8", thumb: "https://i.ytimg.com/vi_webp/Z7M1OdEck_8/maxresdefault.webp" },
+
     { id: 23, title: "EU, VOCÊ E CRISTO", category: "Cinema", quality: "4K", url: "https://www.youtube.com/embed/tDmjcjyw3cc", thumb: "https://i.ytimg.com/vi_webp/tDmjcjyw3cc/maxresdefault.webp" },
     { id: 11, title: "NOITES TRAIÇOEIRAS", category: "Clipe", quality: "HD", url: "https://www.youtube.com/embed/-BrslQXsbgQ", thumb: "https://i.ytimg.com/vi_webp/-BrslQXsbgQ/maxresdefault.webp" },
     { id: 17, title: "CONHECE DEUS MEU VIVER", category: "Clipe", quality: "HD", url: "https://www.youtube.com/embed/UjLz0SMUHcE", thumb: "https://i.ytimg.com/vi_webp/UjLz0SMUHcE/maxresdefault.webp" },
@@ -427,8 +428,9 @@ export default function Home() {
               A Temporada de Covers de Gabriella Stehling está no ar! Assista aos novos lançamentos produzidos pela KIGER.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 max-w-6xl mx-auto mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 max-w-6xl mx-auto mb-8">
               {[
+                { title: "Entrego a Ti", url: "https://www.youtube.com/embed/1YKP5mdZxoM", thumb: "https://i.ytimg.com/vi_webp/1YKP5mdZxoM/maxresdefault.webp" },
                 { title: "Meu Respirar", url: "https://www.youtube.com/embed/WeBx8Ewkm4I", thumb: "https://i.ytimg.com/vi_webp/WeBx8Ewkm4I/maxresdefault.webp" },
                 { title: "Jeová Jireh", url: "https://www.youtube.com/embed/rQlMRuub6vo", thumb: "https://i.ytimg.com/vi_webp/rQlMRuub6vo/maxresdefault.webp" },
                 { title: "Tu És", url: "https://www.youtube.com/embed/yrkck9BhKqo", thumb: "https://i.ytimg.com/vi_webp/yrkck9BhKqo/maxresdefault.webp" }
