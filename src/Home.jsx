@@ -193,6 +193,8 @@ export default function Home() {
 
   // DATABASE VIDEOS
   const portfolioItems = useMemo(() => [
+    { id: 36, title: "VOCAL OPOSTOS ft. EMILLY CATHARINE - IMPERFEITO", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/JcD5r_bgqp4", thumb: "https://i.ytimg.com/vi_webp/JcD5r_bgqp4/maxresdefault.webp", featured: true },
+    { id: 35, title: "ALICE RASEC - DEIXA", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/3u7ubeXCTUI", thumb: "https://i.ytimg.com/vi_webp/3u7ubeXCTUI/maxresdefault.webp", featured: true },
     { id: 34, title: "GABRIELLA STEHLING - ENTREGO A TI", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/1YKP5mdZxoM", thumb: "https://i.ytimg.com/vi_webp/1YKP5mdZxoM/maxresdefault.webp", featured: true },
     { id: 33, title: "GABRIELLA STEHLING - MEU RESPIRAR", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/WeBx8Ewkm4I", thumb: "https://i.ytimg.com/vi_webp/WeBx8Ewkm4I/maxresdefault.webp", featured: true },
     { id: 32, title: "GABRIELLA STEHLING - JEOVÁ JIREH", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/rQlMRuub6vo", thumb: "https://i.ytimg.com/vi_webp/rQlMRuub6vo/maxresdefault.webp", featured: true },
@@ -220,7 +222,7 @@ export default function Home() {
     { id: 11, title: "NOITES TRAIÇOEIRAS", category: "Clipe", quality: "HD", url: "https://www.youtube.com/embed/-BrslQXsbgQ", thumb: "https://i.ytimg.com/vi_webp/-BrslQXsbgQ/maxresdefault.webp" },
     { id: 17, title: "CONHECE DEUS MEU VIVER", category: "Clipe", quality: "HD", url: "https://www.youtube.com/embed/UjLz0SMUHcE", thumb: "https://i.ytimg.com/vi_webp/UjLz0SMUHcE/maxresdefault.webp" },
     { id: 15, title: "CORDEIRO NO ALTAR", category: "Clipe", quality: "HD", url: "https://www.youtube.com/embed/wih6YUYYDJs", thumb: "https://i.ytimg.com/vi_webp/wih6YUYYDJs/maxresdefault.webp" },
-    { id: 20, title: "E SE", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/wZKhJTfWJjE", thumb: "https://i.ytimg.com/vi_webp/wZKhJTfWJjE/maxresdefault.webp" },
+    { id: 20, title: "E SE", category: "Clipe", quality: "4K", url: "https://www.youtube.com/embed/wZKhJTfWJjE", thumb: "https://i.ytimg.com/vi/wZKhJTfWJjE/sddefault.jpg" },
     { id: 8, title: "O ORÁCULO | MAKING OF", category: "Bastidores", quality: "HD", url: "https://www.youtube.com/embed/CZMyydSDaq0", thumb: "https://i.ytimg.com/vi_webp/CZMyydSDaq0/maxresdefault.webp" },
     { id: 6, title: "CICATRIZES | MAKING OF", category: "Bastidores", quality: "HD", url: "https://www.youtube.com/embed/lJT58HZHD7g", thumb: "https://i.ytimg.com/vi_webp/lJT58HZHD7g/maxresdefault.webp" },
   ], []);
