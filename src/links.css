@@ -1,0 +1,24 @@
+.links-page { min-height: 100svh; background: radial-gradient(90% 60% at 50% 0%, rgba(232,162,92,0.12), transparent 60%), var(--ink); }
+.links { position: relative; max-width: 560px; margin: 0 auto; padding: 72px 20px 48px; }
+.links__frame { position: fixed; inset: 14px; pointer-events: none; z-index: 1; }
+.links__frame .hud--tr { top: 12px; right: 30px; }
+.links__head { text-align: center; margin-bottom: 40px; }
+.links__logo { width: 200px; margin: 0 auto 22px; color: var(--bone); }
+.links__tag { color: var(--amber); margin: 0 0 10px; }
+.links__bio { font-size: 26px; margin: 0; color: var(--bone-2); }
+.links__list { display: grid; gap: 10px; }
+.lk { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 6px; background: rgba(237,230,218,0.02); transition: border-color 0.4s, background 0.4s, transform 0.5s var(--ease); }
+.lk:hover { border-color: var(--amber); background: rgba(232,162,92,0.06); transform: translateX(4px); }
+.lk__t { display: block; font-size: 17px; font-weight: 700; font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.02em; }
+.lk__s { display: block; color: var(--mute); margin-top: 4px; font-size: 10px; text-transform: none; letter-spacing: 0.06em; }
+.lk__a { color: var(--amber); font-size: 20px; transition: transform 0.4s var(--ease); }
+.lk:hover .lk__a { transform: translateX(4px); }
+.lk--hot { border-color: rgba(232,162,92,0.5); }
+.links__team { margin-top: 56px; }
+.links__label { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--bone-2); margin: 0 0 22px; }
+.links__avatars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px 10px; }
+.av { display: grid; justify-items: center; gap: 8px; }
+.av img { width: 100%; aspect-ratio: 1; object-fit: cover; object-position: 50% 18%; border-radius: 50%; border: 1px solid var(--line-2); transition: transform 0.5s var(--ease), border-color 0.4s; }
+.av:hover img { transform: scale(1.06); border-color: var(--amber); }
+.av span { font-size: 9px; color: var(--mute); }
+.links__foot { text-align: center; color: var(--mute); margin-top: 48px; }

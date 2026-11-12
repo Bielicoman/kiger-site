@@ -1,13 +1,273 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>KIGER — Produtora Audiovisual · Cinema, Videoclipes e Documentários</title>
+    <meta name="description" content="KIGER é uma produtora audiovisual de São Paulo. Videoclipes, live sessions, cinema, documentários e filmes institucionais — onde propósitos ganham a cor do seu sonho." />
+    <meta name="theme-color" content="#0b0a09" />
+    <link rel="canonical" href="https://kiger-site.vercel.app/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kiger</title>
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="KIGER" />
+    <meta property="og:title" content="KIGER — Produtora Audiovisual" />
+    <meta property="og:description" content="Onde propósitos ganham a cor do seu sonho. Videoclipes, cinema, documentários e institucionais." />
+    <meta property="og:url" content="https://kiger-site.vercel.app/" />
+    <meta property="og:image" content="https://kiger-site.vercel.app/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/media/hero-poster.jpg" as="image" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "KIGER Produções Audiovisuais",
+        "url": "https://kiger-site.vercel.app/",
+        "logo": "https://kiger-site.vercel.app/og.jpg",
+        "email": "kigerprodutora@gmail.com",
+        "address": { "@type": "PostalAddress", "addressLocality": "São Paulo", "addressCountry": "BR" },
+        "sameAs": ["https://instagram.com/kiger.br", "https://www.youtube.com/@kigerbr"]
+      }
+    </script>
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+  <body class="is-loading">
+    <a class="skip" href="#main">Pular para o conteúdo</a>
+
+    <!-- LOADER -->
+    <div class="loader" id="loader" aria-hidden="true">
+      <div class="loader__panel loader__panel--top"></div>
+      <div class="loader__panel loader__panel--bottom"></div>
+      <div class="loader__core">
+        <div class="tri tri--loader"><i></i><i></i><i></i></div>
+        <div class="loader__logo logo"></div>
+        <div class="loader__meta mono"><span id="loaderCount">000</span><span>REEL · MMXXVI</span></div>
+      </div>
+    </div>
+
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__label" id="cursorLabel"></span></div>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+      <a class="header__logo" href="#top" aria-label="KIGER — início"><span class="logo"></span></a>
+      <nav class="nav" aria-label="Principal">
+        <a href="#temporada">Temporada</a>
+        <a href="#trabalhos">Trabalhos</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#equipe">Equipe</a>
+        <a href="#bastidores">Bastidores</a>
+      </nav>
+      <a class="btn btn--pill header__cta" href="#contato" data-magnetic><span>Orçamento</span></a>
+      <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu"><i></i><i></i><i></i></button>
+    </header>
+
+    <div class="menu" id="menu" hidden>
+      <nav aria-label="Menu móvel">
+        <a href="#temporada"><small class="mono">01</small>Temporada</a>
+        <a href="#trabalhos"><small class="mono">02</small>Trabalhos</a>
+        <a href="#servicos"><small class="mono">03</small>Serviços</a>
+        <a href="#equipe"><small class="mono">04</small>Equipe</a>
+        <a href="#bastidores"><small class="mono">05</small>Bastidores</a>
+        <a href="#contato"><small class="mono">06</small>Contato</a>
+      </nav>
+      <p class="menu__foot mono">kigerprodutora@gmail.com · @kiger.br</p>
+    </div>
+
+    <main id="main">
+      <!-- HERO -->
+      <section class="hero" id="top" aria-label="Apresentação">
+        <div class="hero__media">
+          <video class="hero__video" id="heroVideo" src="/media/hero.mp4" poster="/media/hero-poster.jpg" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+          <div class="hero__shade"></div>
+        </div>
+        <div class="hero__frame" aria-hidden="true">
+          <span class="corner corner--tl"></span><span class="corner corner--tr"></span>
+          <span class="corner corner--bl"></span><span class="corner corner--br"></span>
+          <div class="hud hud--tl mono">KIGER / REEL 2026 <span class="hud__dim">— TEMPORADA DE COVERS</span></div>
+          <div class="hud hud--tr mono"><span class="rec"></span>REC <span id="timecode">00:00:00:00</span></div>
+          <div class="hud hud--bl mono">4K · 2.39:1 · 24 FPS</div>
+          <div class="hud hud--br mono">SÃO PAULO · BR</div>
+        </div>
+        <div class="hero__content">
+          <p class="eyebrow mono reveal-up">Produtora audiovisual</p>
+          <h1 class="hero__title" aria-label="Onde propósitos ganham a cor do seu sonho">
+            <span class="line"><span class="word">Onde</span> <span class="word">propósitos</span></span>
+            <span class="line"><span class="word">ganham</span> <span class="word">a</span> <span class="word">cor</span></span>
+            <span class="line"><em class="word serif">do seu sonho.</em></span>
+          </h1>
+          <div class="hero__actions reveal-up">
+            <a class="btn btn--light" href="#trabalhos" data-magnetic><span>Ver trabalhos</span></a>
+            <a class="btn btn--ghost" href="#contato" data-magnetic><span>Fale com a gente</span></a>
+          </div>
+        </div>
+        <a class="scrollcue mono" href="#manifesto" aria-label="Rolar para o manifesto"><span class="tri tri--sm"><i></i><i></i><i></i></span>Role</a>
+      </section>
+
+      <!-- TICKER -->
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker__track" id="ticker">
+          <span>Videoclipes</span><b class="tri tri--xs"><i></i><i></i><i></i></b>
+          <span class="serif">Cinema</span><b class="tri tri--xs"><i></i><i></i><i></i></b>
+          <span>Documentários</span><b class="tri tri--xs"><i></i><i></i><i></i></b>
+          <span class="serif">Live sessions</span><b class="tri tri--xs"><i></i><i></i><i></i></b>
+          <span>Institucionais</span><b class="tri tri--xs"><i></i><i></i><i></i></b>
+          <span class="serif">Casamentos</span><b class="tri tri--xs"><i></i><i></i><i></i></b>
+        </div>
+      </div>
+
+      <!-- MANIFESTO -->
+      <section class="manifesto section" id="manifesto">
+        <div class="section__label mono"><span class="tri tri--xs"><i></i><i></i><i></i></span>Manifesto</div>
+        <p class="manifesto__text" id="manifestoText">A KIGER nasceu num set universitário e virou produtora. Fazemos filmes com <em>propósito</em> — videoclipes, cinema, documentários e institucionais — tratando cada quadro como se fosse o último. Luz desenhada, som honesto, montagem com respiro. A imagem chega antes da palavra.</p>
+        <dl class="stats">
+          <div class="stat"><dt class="mono">Filmes publicados</dt><dd><span data-count="37">0</span>+</dd></div>
+          <div class="stat"><dt class="mono">Episódios na Temporada</dt><dd><span data-count="8">0</span></dd></div>
+          <div class="stat"><dt class="mono">Pessoas no time</dt><dd><span data-count="10">0</span></dd></div>
+          <div class="stat"><dt class="mono">Resolução de entrega</dt><dd>4K</dd></div>
+        </dl>
+      </section>
+
+      <!-- TEMPORADA -->
+      <section class="season" id="temporada" aria-label="Temporada de Covers — Gabriella Stehling">
+        <div class="season__pin">
+          <div class="season__track" id="seasonTrack">
+            <div class="season__intro">
+              <div class="section__label mono"><span class="tri tri--xs"><i></i><i></i><i></i></span>Em destaque · 2026</div>
+              <h2 class="display">Temporada<br /><em class="serif">de Covers</em></h2>
+              <p class="lead">Oito episódios com <strong>Gabriella Stehling</strong>, gravados em 4K numa sala transformada em estúdio. Um projeto de lançamento de artista — do conceito ao último frame.</p>
+              <a class="link-arrow mono" href="https://www.youtube.com/@gabriellastehling" target="_blank" rel="noopener noreferrer">Canal da artista <span aria-hidden="true">↗</span></a>
+            </div>
+            <!-- episódios inseridos via JS -->
+          </div>
+        </div>
+        <div class="season__progress" aria-hidden="true"><span id="seasonBar"></span></div>
+      </section>
+
+      <!-- LANÇAMENTOS -->
+      <section class="releases section" id="lancamentos">
+        <header class="section__head">
+          <div class="section__label mono"><span class="tri tri--xs"><i></i><i></i><i></i></span>Lançamentos recentes</div>
+          <h2 class="display">Novos <em class="serif">clipes</em></h2>
+        </header>
+        <div class="releases__grid" id="releasesGrid"></div>
+      </section>
+
+      <!-- PORTFÓLIO -->
+      <section class="work section" id="trabalhos">
+        <header class="section__head section__head--split">
+          <div>
+            <div class="section__label mono"><span class="tri tri--xs"><i></i><i></i><i></i></span>Arquivo</div>
+            <h2 class="display">Todos os <em class="serif">trabalhos</em></h2>
+          </div>
+          <div class="filters" id="filters" role="tablist" aria-label="Filtrar por categoria"></div>
+        </header>
+        <div class="work__grid" id="workGrid"></div>
+      </section>
+
+      <!-- SERVIÇOS -->
+      <section class="services section" id="servicos">
+        <header class="section__head">
+          <div class="section__label mono"><span class="tri tri--xs"><i></i><i></i><i></i></span>O que fazemos</div>
+          <h2 class="display">Serviços</h2>
+        </header>
+        <ol class="services__list" id="servicesList"></ol>
+        <div class="services__float" id="servicesFloat" aria-hidden="true"><img alt="" id="servicesFloatImg" /></div>
+      </section>
+
+      <!-- CLIENTES -->
+      <section class="clients section" id="clientes">
+        <header class="section__head">
+          <div class="section__label mono"><span class="tri tri--xs"><i></i><i></i><i></i></span>Quem confia</div>
+          <h2 class="display">Clientes & <em class="serif">artistas</em></h2>
+        </header>
+        <div class="logos" id="logos"></div>
+        <p class="artists" id="artists"></p>
+      </section>
+
+      <!-- EQUIPE -->
+      <section class="team section" id="equipe">
+        <header class="section__head section__head--split">
+          <div>
+            <div class="section__label mono"><span class="tri tri--xs"><i></i><i></i><i></i></span>Equipe</div>
+            <h2 class="display">Os <em class="serif">dez</em> por trás da câmera</h2>
+          </div>
+          <p class="lead team__lead">Direção, produção, fotografia, arte, luz e edição. Um time que sai do set junto e volta para a sala de montagem junto.</p>
+        </header>
+        <div class="team__grid" id="teamGrid"></div>
+        <p class="note mono">Retratos editoriais com o uniforme KIGER, criados a partir de fotos reais de cada integrante.</p>
+      </section>
+
+      <!-- BASTIDORES -->
+      <section class="backstage" id="bastidores" aria-label="Bastidores">
+        <header class="section__head section">
+          <div class="section__label mono"><span class="tri tri--xs"><i></i><i></i><i></i></span>Bastidores</div>
+          <h2 class="display">No <em class="serif">set</em></h2>
+        </header>
+        <div class="strip" data-dir="-1"><div class="strip__track" id="stripA"></div></div>
+        <div class="strip" data-dir="1"><div class="strip__track" id="stripB"></div></div>
+      </section>
+
+      <!-- CONTATO -->
+      <section class="contact section" id="contato">
+        <div class="contact__head">
+          <div class="section__label mono"><span class="tri tri--xs"><i></i><i></i><i></i></span>Contato</div>
+          <h2 class="contact__title">Vamos <em class="serif">filmar?</em></h2>
+          <p class="lead">Conte a sua ideia. Respondemos pelo WhatsApp com proposta e próximos passos.</p>
+          <ul class="contact__links">
+            <li><a href="mailto:kigerprodutora@gmail.com" class="mono">kigerprodutora@gmail.com</a></li>
+            <li><a href="https://wa.me/559491441635" target="_blank" rel="noopener noreferrer" class="mono">WhatsApp (94) 9144-1635</a></li>
+            <li><a href="https://instagram.com/kiger.br" target="_blank" rel="noopener noreferrer" class="mono">Instagram @kiger.br</a></li>
+            <li><a href="https://www.youtube.com/@kigerbr" target="_blank" rel="noopener noreferrer" class="mono">YouTube @kigerbr</a></li>
+          </ul>
+        </div>
+        <form class="form" id="contactForm" novalidate>
+          <label class="field"><span class="mono">Nome</span><input name="name" autocomplete="name" required maxlength="80" /></label>
+          <label class="field"><span class="mono">E-mail</span><input name="email" type="email" autocomplete="email" required maxlength="120" /></label>
+          <label class="field"><span class="mono">Projeto</span>
+            <select name="type" required>
+              <option value="">Selecione</option>
+              <option>Videoclipe</option>
+              <option>Live session</option>
+              <option>Filme institucional</option>
+              <option>Documentário</option>
+              <option>Curta / cinema</option>
+              <option>Evento ou casamento</option>
+              <option>Outro</option>
+            </select>
+          </label>
+          <label class="field field--full"><span class="mono">Mensagem</span><textarea name="message" rows="4" required maxlength="1200"></textarea></label>
+          <p class="form__error mono" id="formError" role="alert" hidden></p>
+          <button class="btn btn--light form__submit" type="submit" data-magnetic><span>Enviar pelo WhatsApp</span></button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__logo logo" aria-hidden="true"></div>
+      <div class="footer__row mono">
+        <span>© 2026 KIGER Produções Audiovisuais</span>
+        <a href="/links">Links</a>
+        <span>São Paulo · Brasil</span>
+        <a href="#top">Voltar ao topo ↑</a>
+      </div>
+    </footer>
+
+    <!-- PLAYER -->
+    <div class="player" id="player" role="dialog" aria-modal="true" aria-label="Player de vídeo" hidden>
+      <button class="player__close mono" id="playerClose" aria-label="Fechar vídeo">Fechar ✕</button>
+      <div class="player__box"><div class="player__frame" id="playerFrame"></div></div>
+      <p class="player__title" id="playerTitle"></p>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Foto de bastidores" hidden>
+      <button class="player__close mono" id="lightboxClose" aria-label="Fechar foto">Fechar ✕</button>
+      <img id="lightboxImg" alt="Foto de bastidores da KIGER" />
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

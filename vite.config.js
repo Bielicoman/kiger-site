@@ -1,7 +1,17 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { resolve } from 'node:path'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  build: {
+    target: 'es2020',
+    // nada embutido como data: — mantém a CSP estrita (font-src/img-src 'self')
+    assetsInlineLimit: 0,
+    rollupOptions: {
+      input: {
+        main: resolve(import.meta.dirname, 'index.html'),
+        links: resolve(import.meta.dirname, 'links/index.html'),
+        notFound: resolve(import.meta.dirname, '404.html'),
+      },
+    },
+  },
 })

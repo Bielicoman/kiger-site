@@ -1,0 +1,4 @@
+.nf { min-height: 100svh; display: grid; place-items: center; }
+.nf__main { text-align: center; padding: 24px; display: grid; justify-items: center; gap: 22px; }
+.nf__tc { display: flex; gap: 10px; align-items: center; color: var(--mute); }
+.nf .display { font-size: clamp(90px, 22vw, 320px); }
